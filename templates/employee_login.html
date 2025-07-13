@@ -1,13 +1,126 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Employee Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Login - Jobs Dunia</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    <h2>Employee Login</h2>
-    <form action="/" method="get">
-        <!-- For demo, just redirect to home -->
-        <input type="submit" value="Go to Home">
-    </form>
+    <header class="fade-in">
+        <h2>🔐 Employee Login</h2>
+        <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">Access Your Job Search Dashboard</p>
+    </header>
+
+    <main class="fade-in">
+        <div class="card" style="max-width: 500px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">👨‍💼</div>
+                <h3 style="color: #667eea; margin-bottom: 1rem;">Welcome Back!</h3>
+                <p style="color: #4a5568;">
+                    Sign in to access your personalized job recommendations and application history.
+                </p>
+            </div>
+
+            <!-- Google Sign-In -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div id="g_id_onload"
+                     data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                     data-login_uri="/employee/google-login"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin"
+                     data-type="standard"
+                     data-size="large"
+                     data-theme="outline"
+                     data-text="sign_in_with"
+                     data-shape="rectangular"
+                     data-logo_alignment="left">
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0; position: relative;">
+                <hr style="border: none; height: 1px; background: #e2e8f0;">
+                <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: white; padding: 0 1rem; color: #718096; font-size: 0.9rem;">
+                    Or continue with email
+                </span>
+            </div>
+
+            <!-- Traditional Login Form -->
+            <form action="/employee/login" method="post">
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="email">📧 Email Address</label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="your.email@example.com">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="password">🔒 Password</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="Enter your password">
+                </div>
+
+                <div style="text-align: center;">
+                    <input type="submit" value="🚀 Sign In" class="btn">
+                </div>
+            </form>
+
+            <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+                <p style="color: #4a5568; margin-bottom: 1rem;">Don't have an account?</p>
+                <a href="/employee/register" class="btn btn-secondary">📝 Register as Job Seeker</a>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); padding: 1.5rem; border-radius: 12px; margin-top: 2rem;">
+                <h4 style="color: #234e52; margin-bottom: 1rem; text-align: center;">✨ Why Login?</h4>
+                <ul style="color: #2c7a7b; list-style: none; padding: 0; text-align: left;">
+                    <li style="margin-bottom: 0.5rem;">📊 Track your job applications</li>
+                    <li style="margin-bottom: 0.5rem;">🎯 Get personalized job recommendations</li>
+                    <li style="margin-bottom: 0.5rem;">💼 Save jobs for later viewing</li>
+                    <li style="margin-bottom: 0.5rem;">📈 View your profile statistics</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>
+            <a href="/">🏠 Back to Home</a> | 
+            <a href="/employer/login">👔 Employer Login</a> | 
+            <a href="/openings">📋 Current Openings</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Jobs Dunia - Your Career Success Partner
+        </p>
+    </footer>
+
+    <script>
+        // Handle Google Sign-In response
+        function handleCredentialResponse(response) {
+            // Create form and submit
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/employee/google-login';
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'credential';
+            input.value = response.credential;
+            
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Initialize Google Sign-In
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: 'YOUR_GOOGLE_CLIENT_ID',
+                callback: handleCredentialResponse
+            });
+        }
+    </script>
 </body>
 </html>

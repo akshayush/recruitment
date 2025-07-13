@@ -12,6 +12,8 @@ import time
 import secrets
 import jwt
 from datetime import datetime, timedelta
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -56,6 +58,10 @@ import os
 JWT_SECRET = os.environ.get('JWT_SECRET', secrets.token_urlsafe(32))
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', 'your-google-client-id')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', 'your-google-client-secret')
 
 # Rate limiting storage (in production, use Redis)
 rate_limit_storage = {}
@@ -108,6 +114,27 @@ def get_current_employer(token: str = Cookie(None, alias="access_token"), db: Se
         raise HTTPException(status_code=404, detail="Employer not found")
     
     return employer
+
+def get_current_employee(token: str = Cookie(None, alias="employee_token"), db: Session = Depends(get_db)):
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    payload = verify_jwt_token(token)
+    if payload.get("user_type") != "employee":
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    employee = db.query(Employee).filter(Employee.id == payload["user_id"]).first()
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    
+    return employee
+
+def verify_google_token(token: str) -> dict:
+    try:
+        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), GOOGLE_CLIENT_ID)
+        return idinfo
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid Google token")
 
 # Security and validation functions
 def validate_email(email: str) -> bool:
@@ -398,4 +425,86 @@ def employee_register(
 def employer_logout():
     response = RedirectResponse("/", status_code=302)
     response.delete_cookie("access_token")
+    return response
+
+# --- Employee Login Routes ---
+@app.get("/employee/login", response_class=HTMLResponse)
+def employee_login_form(request: Request):
+    return templates.TemplateResponse("employee_login.html", {"request": request})
+
+@app.post("/employee/google-login")
+def employee_google_login(
+    request: Request,
+    credential: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    # Rate limiting
+    client_ip = request.client.host
+    check_rate_limit(f"google_login_{client_ip}", max_requests=10, window_minutes=15)
+    
+    try:
+        # Verify Google token
+        user_info = verify_google_token(credential)
+        email = user_info.get('email')
+        name = user_info.get('name')
+        
+        if not email:
+            raise HTTPException(status_code=400, detail="Unable to get email from Google")
+        
+        # Check if employee exists
+        employee = db.query(Employee).filter(Employee.email == email).first()
+        
+        if not employee:
+            # Create new employee account with Google info
+            employee = Employee(
+                name=name,
+                email=email,
+                mobile="",  # Will need to be filled later
+                qualification="",
+                experience=0,
+                current_profile="",
+                current_org="",
+                current_ctc="",
+                notice_period="",
+                cv=""
+            )
+            db.add(employee)
+            db.commit()
+            db.refresh(employee)
+        
+        # Create JWT token
+        token = create_jwt_token(employee.id, "employee")
+        
+        response = RedirectResponse("/employee/dashboard", status_code=302)
+        response.set_cookie(
+            key="employee_token",
+            value=token,
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            max_age=JWT_EXPIRATION_HOURS * 3600
+        )
+        return response
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Google authentication failed: {str(e)}")
+
+@app.get("/employee/dashboard", response_class=HTMLResponse)
+def employee_dashboard(
+    request: Request,
+    current_employee: Employee = Depends(get_current_employee),
+    db: Session = Depends(get_db)
+):
+    # Get available jobs
+    jobs = db.query(JobPost).all()
+    return templates.TemplateResponse("employee_dashboard.html", {
+        "request": request,
+        "employee": current_employee,
+        "jobs": jobs
+    })
+
+@app.post("/employee/logout")
+def employee_logout():
+    response = RedirectResponse("/", status_code=302)
+    response.delete_cookie("employee_token")
     return response

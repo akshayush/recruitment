@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard - Jobs Dunia</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="fade-in">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div>
+                <h2>👨‍💼 Welcome, {{ employee.name }}!</h2>
+                <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">Your Job Search Dashboard</p>
+            </div>
+            <form action="/employee/logout" method="post" style="margin: 0;">
+                <button type="submit" class="btn btn-secondary" style="margin: 0;">🚪 Logout</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="fade-in">
+        <!-- Profile Summary -->
+        <div class="card">
+            <h3 style="color: #667eea; margin-bottom: 1.5rem;">📋 Your Profile Summary</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div>
+                    <strong>📧 Email:</strong> {{ employee.email }}
+                </div>
+                <div>
+                    <strong>📱 Mobile:</strong> {{ employee.mobile or "Not provided" }}
+                </div>
+                <div>
+                    <strong>🎓 Qualification:</strong> {{ employee.qualification or "Not provided" }}
+                </div>
+                <div>
+                    <strong>⏱️ Experience:</strong> {{ employee.experience }} years
+                </div>
+                <div>
+                    <strong>💼 Current Profile:</strong> {{ employee.current_profile or "Not provided" }}
+                </div>
+                <div>
+                    <strong>🏢 Current Organization:</strong> {{ employee.current_org or "Not provided" }}
+                </div>
+            </div>
+            
+            {% if not employee.mobile or not employee.qualification %}
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                <strong>⚠️ Complete Your Profile:</strong> Some information is missing. Please update your profile to get better job recommendations.
+                <a href="/employee/profile" class="btn btn-secondary" style="margin-left: 1rem; display: inline-block;">✏️ Update Profile</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Available Jobs -->
+        <div class="card">
+            <h3 style="color: #667eea; margin-bottom: 1.5rem;">🎯 Available Job Opportunities</h3>
+            
+            {% if jobs %}
+                <div style="display: grid; gap: 1.5rem;">
+                    {% for job in jobs %}
+                    <div style="border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+                        <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 1rem;">
+                            <h4 style="color: #2d3748; margin: 0;">{{ job.hiring_profile }}</h4>
+                            <span style="background: #667eea; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem;">
+                                {{ job.positions }} Position(s)
+                            </span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                            <div><strong>🎓 Qualification:</strong> {{ job.qualification }}</div>
+                            <div><strong>⏱️ Experience:</strong> {{ job.experience }} years</div>
+                            <div><strong>📍 Location:</strong> {{ job.location }}</div>
+                            <div><strong>💰 CTC:</strong> {{ job.ctc }}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <strong>🛠️ Skills Required:</strong> {{ job.skills }}
+                        </div>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong>📋 Responsibilities:</strong>
+                            <p style="margin-top: 0.5rem; color: #4a5568;">{{ job.responsibilities }}</p>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="btn" onclick="applyForJob({{ job.id }})">📨 Apply Now</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 3rem; color: #4a5568;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                    <h4>No Job Openings Available</h4>
+                    <p>Check back later for new opportunities!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <h3 style="color: #667eea; margin-bottom: 1.5rem;">⚡ Quick Actions</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <a href="/employee/profile" class="btn btn-secondary">✏️ Update Profile</a>
+                <a href="/openings" class="btn btn-secondary">🔍 Browse All Jobs</a>
+                <a href="/employee/applications" class="btn btn-secondary">📊 My Applications</a>
+                <a href="/employee/saved-jobs" class="btn btn-secondary">❤️ Saved Jobs</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>
+            <a href="/">🏠 Home</a> | 
+            <a href="/openings">📋 All Openings</a> | 
+            <a href="/employee/profile">👤 My Profile</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Jobs Dunia - Your Career Success Partner
+        </p>
+    </footer>
+
+    <script>
+        function applyForJob(jobId) {
+            // For now, just show an alert. You can implement actual application logic
+            alert('Application feature will be implemented soon! Job ID: ' + jobId);
+            // TODO: Implement job application functionality
+        }
+    </script>
+</body>
+</html>

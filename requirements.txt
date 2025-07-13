@@ -6,3 +6,6 @@ python-multipart
 pydantic
 werkzeug
 pyjwt
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
