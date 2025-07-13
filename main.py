@@ -430,7 +430,10 @@ def employer_logout():
 # --- Employee Login Routes ---
 @app.get("/employee/login", response_class=HTMLResponse)
 def employee_login_form(request: Request):
-    return templates.TemplateResponse("employee_login.html", {"request": request})
+    return templates.TemplateResponse("employee_login.html", {
+        "request": request,
+        "google_client_id": GOOGLE_CLIENT_ID
+    })
 
 @app.post("/employee/google-login")
 def employee_google_login(

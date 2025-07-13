@@ -28,7 +28,7 @@
             <!-- Google Sign-In -->
             <div style="text-align: center; margin-bottom: 2rem;">
                 <div id="g_id_onload"
-                     data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                     data-client_id="{{ google_client_id }}"
                      data-login_uri="/employee/google-login"
                      data-auto_prompt="false">
                 </div>
@@ -117,7 +117,7 @@
         // Initialize Google Sign-In
         window.onload = function () {
             google.accounts.id.initialize({
-                client_id: 'YOUR_GOOGLE_CLIENT_ID',
+                client_id: '{{ google_client_id }}',
                 callback: handleCredentialResponse
             });
         }
