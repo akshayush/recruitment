@@ -1,13 +1,70 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Employer Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Login - Jobs Dunia</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h2>Employer Login</h2>
-    <form action="/employer/dashboard" method="get">
-        <!-- For demo, just redirect to dashboard -->
-        <input type="submit" value="Go to Dashboard">
-    </form>
+    <header class="fade-in">
+        <h2>🔑 Employer Login</h2>
+        <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">Access Your Recruitment Dashboard</p>
+    </header>
+    
+    <main class="fade-in">
+        <div class="card" style="max-width: 500px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">👔</div>
+                <h3 style="color: #667eea; margin-bottom: 1rem;">Welcome Back!</h3>
+                <p style="color: #4a5568;">
+                    Access your employer dashboard to manage job postings and find top talent.
+                </p>
+            </div>
+            
+            <form action="/employer/dashboard" method="get">
+                <div style="text-align: center; margin: 2rem 0;">
+                    <p style="color: #718096; margin-bottom: 1.5rem;">
+                        <strong>Demo Mode:</strong> Click below to access the dashboard
+                    </p>
+                    <input type="submit" value="🚀 Go to Dashboard" class="btn">
+                </div>
+            </form>
+            
+            <div style="background: linear-gradient(135deg, #fef5e7 0%, #fbd38d 100%); padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
+                <h4 style="color: #744210; margin-bottom: 1rem;">🔒 Full Authentication Coming Soon</h4>
+                <p style="color: #975a16; font-size: 0.9rem;">
+                    We're working on implementing complete user authentication with secure login, 
+                    password reset, and session management.
+                </p>
+            </div>
+            
+            <div style="text-align: center; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+                <p style="color: #4a5568; margin-bottom: 1rem;">Don't have an account?</p>
+                <a href="/employer/register" class="btn btn-secondary">📝 Register as Employer</a>
+            </div>
+        </div>
+        
+        <div class="card" style="margin-top: 2rem; text-align: center;">
+            <h3 style="color: #667eea; margin-bottom: 1.5rem;">🎯 Quick Access</h3>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/openings" class="btn">📋 View Current Openings</a>
+                <a href="/" class="btn btn-secondary">🏠 Back to Home</a>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>
+            <a href="/">🏠 Home</a> | 
+            <a href="/employee/register">👨‍💼 Job Seeker Portal</a> | 
+            <a href="/openings">📋 Browse Jobs</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Jobs Dunia - Your Recruitment Partner
+        </p>
+    </footer>
 </body>
 </html>

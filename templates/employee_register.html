@@ -1,31 +1,148 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Employer Registration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Seeker Registration - Jobs Dunia</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h2>Employer Registration</h2>
+    <header class="fade-in">
+        <h2>👨‍💼 Job Seeker Registration</h2>
+        <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">Start Your Journey to Career Success</p>
     </header>
-    <main>
-        <form action="/employer/register" method="post">
-            <label>Employer Name:</label>
-            <input type="text" name="employer_name" required>
-            <label>Mobile:</label>
-            <input type="text" name="mobile" required>
-            <label>Email:</label>
-            <input type="email" name="email" required>
-            <label>Password:</label>
-            <input type="password" name="password" required>
-            <input type="submit" value="Register">
-        </form>
-        <div>
-            <a href="/employer/login">Already registered? Login</a>
+    
+    <main class="fade-in">
+        <div class="card">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🌟</div>
+                <h3 style="color: #667eea; margin-bottom: 1rem;">Join Thousands of Successful Professionals</h3>
+                <p style="color: #4a5568;">
+                    Register with Jobs Dunia and get access to exclusive job opportunities in CA, CS, CMA, 
+                    and Commerce fields across India.
+                </p>
+            </div>
+            
+            <form action="/employee/register" method="post" enctype="multipart/form-data">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <label for="name">👤 Full Name</label>
+                        <input type="text" id="name" name="name" required 
+                               placeholder="Enter your full name">
+                    </div>
+                    
+                    <div>
+                        <label for="mobile">📱 Mobile Number</label>
+                        <input type="tel" id="mobile" name="mobile" required 
+                               placeholder="+91 98765 43210" pattern="[0-9]{10}">
+                    </div>
+                    
+                    <div>
+                        <label for="email">📧 Email Address</label>
+                        <input type="email" id="email" name="email" required 
+                               placeholder="your.email@example.com">
+                    </div>
+                    
+                    <div>
+                        <label for="qualification">🎓 Highest Qualification</label>
+                        <input type="text" id="qualification" name="qualification" required 
+                               placeholder="e.g., CA, CS, CMA, B.Com, M.Com">
+                    </div>
+                    
+                    <div>
+                        <label for="experience">⏱️ Total Experience (Years)</label>
+                        <input type="number" id="experience" name="experience" required min="0" max="40" 
+                               placeholder="e.g., 3">
+                    </div>
+                    
+                    <div>
+                        <label for="current_profile">💼 Current Job Profile</label>
+                        <input type="text" id="current_profile" name="current_profile" required 
+                               placeholder="e.g., Senior Accountant, Tax Consultant">
+                    </div>
+                    
+                    <div>
+                        <label for="current_org">🏢 Current Organization</label>
+                        <input type="text" id="current_org" name="current_org" required 
+                               placeholder="Enter your current company name">
+                    </div>
+                    
+                    <div>
+                        <label for="current_ctc">💰 Current CTC/Salary</label>
+                        <input type="text" id="current_ctc" name="current_ctc" required 
+                               placeholder="e.g., 5 LPA, 40k/month">
+                    </div>
+                    
+                    <div>
+                        <label for="notice_period">📅 Notice Period</label>
+                        <input type="text" id="notice_period" name="notice_period" required 
+                               placeholder="e.g., 30 days, Immediate, 2 months">
+                    </div>
+                    
+                    <div>
+                        <label for="cv">📄 Upload Resume/CV</label>
+                        <input type="file" id="cv" name="cv" required accept=".pdf,.doc,.docx"
+                               style="padding: 0.7rem; border: 2px dashed #e2e8f0; background: #f7fafc;">
+                        <small style="color: #718096; font-size: 0.8rem; display: block; margin-top: 0.5rem;">
+                            Upload PDF, DOC, or DOCX (Max 5MB)
+                        </small>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%); padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
+                    <h4 style="color: #22543d; margin-bottom: 1rem;">✅ What You Get:</h4>
+                    <ul style="color: #2f855a; list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem;">✓ Access to exclusive job opportunities</li>
+                        <li style="margin-bottom: 0.5rem;">✓ Personalized job recommendations</li>
+                        <li style="margin-bottom: 0.5rem;">✓ Career guidance from industry experts</li>
+                        <li style="margin-bottom: 0.5rem;">✓ Priority consideration by top employers</li>
+                    </ul>
+                </div>
+                
+                <div style="text-align: center;">
+                    <input type="submit" value="🚀 Register & Find Jobs" class="btn">
+                </div>
+            </form>
+            
+            <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+                <p style="color: #4a5568; margin-bottom: 1rem;">Already registered?</p>
+                <a href="/employee/login" class="btn btn-secondary">🔑 Login to Profile</a>
+            </div>
+        </div>
+        
+        <div class="card" style="margin-top: 2rem;">
+            <h3 style="color: #667eea; text-align: center; margin-bottom: 1.5rem;">🎯 Career Success Stories</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border-radius: 12px;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📈</div>
+                    <h4 style="color: #2d3748; margin-bottom: 0.5rem;">500+ Placements</h4>
+                    <p style="color: #718096; font-size: 0.9rem;">Successfully placed professionals</p>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border-radius: 12px;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏆</div>
+                    <h4 style="color: #2d3748; margin-bottom: 0.5rem;">95% Success Rate</h4>
+                    <p style="color: #718096; font-size: 0.9rem;">In matching right candidates</p>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border-radius: 12px;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">💼</div>
+                    <h4 style="color: #2d3748; margin-bottom: 0.5rem;">100+ Companies</h4>
+                    <p style="color: #718096; font-size: 0.9rem;">In our employer network</p>
+                </div>
+            </div>
         </div>
     </main>
+    
     <footer>
-        <a href="/">Back to Home</a>
+        <p>
+            <a href="/">🏠 Back to Home</a> | 
+            <a href="/employer/register">👔 Employer Registration</a> | 
+            <a href="/openings">📋 Current Openings</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Jobs Dunia - Empowering Careers, Creating Futures
+        </p>
     </footer>
 </body>
 </html>

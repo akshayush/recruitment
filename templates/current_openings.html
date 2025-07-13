@@ -1,40 +1,114 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Current Openings</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Job Openings - Jobs Dunia</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h2>Current Openings</h2>
+    <header class="fade-in">
+        <h2>🚀 Current Job Openings</h2>
+        <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">Discover Your Next Career Opportunity</p>
     </header>
-    <main>
-        <table>
-            <tr>
-                <th>Job Title</th>
-                <th>Profile</th>
-                <th>Qualification</th>
-                <th>Exp</th>
-                <th>Location</th>
-                <th>CTC</th>
-            </tr>
-            {% for job in jobs %}
-            <tr>
-                <td>{{ job.hiring_profile }}</td>
-                <td>{{ job.responsibilities }}</td>
-                <td>{{ job.qualification }}</td>
-                <td>{{ job.experience }}</td>
-                <td>{{ job.location }}</td>
-                <td>{{ job.ctc }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        <p>
-            <a href="https://forms.gle/your-google-form-link" target="_blank">Apply via Google Form</a>
-        </p>
+    
+    <main class="fade-in">
+        {% if jobs %}
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h3 style="color: #667eea;">{{ jobs|length }} Active Job Openings</h3>
+                <p style="color: #4a5568;">Find the perfect role that matches your skills and experience</p>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>🎯 Job Title</th>
+                            <th>📋 Responsibilities</th>
+                            <th>🎓 Qualification</th>
+                            <th>⏱️ Experience</th>
+                            <th>📍 Location</th>
+                            <th>💰 CTC</th>
+                            <th>🔧 Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                        <tr class="slide-in">
+                            <td>
+                                <strong style="color: #2d3748;">{{ job.hiring_profile }}</strong>
+                                <br>
+                                <small style="color: #718096;">{{ job.positions }} Position(s) Available</small>
+                            </td>
+                            <td>
+                                <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ job.responsibilities[:100] }}{% if job.responsibilities|length > 100 %}...{% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <span style="background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; color: #234e52;">
+                                    {{ job.qualification }}
+                                </span>
+                            </td>
+                            <td>
+                                <span style="background: linear-gradient(135deg, #fef5e7 0%, #fbd38d 100%); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; color: #744210;">
+                                    {{ job.experience }} Years
+                                </span>
+                            </td>
+                            <td>
+                                <span style="background: linear-gradient(135deg, #e6f3ff 0%, #90cdf4 100%); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; color: #1a365d;">
+                                    📍 {{ job.location }}
+                                </span>
+                            </td>
+                            <td>
+                                <strong style="color: #38a169; font-size: 1.1rem;">{{ job.ctc }}</strong>
+                            </td>
+                            <td>
+                                <a href="https://forms.gle/your-google-form-link" target="_blank" class="btn" style="padding: 0.5rem 1rem; font-size: 0.8rem;">
+                                    Apply Now
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="card" style="margin-top: 2rem; text-align: center;">
+                <h3 style="color: #667eea; margin-bottom: 1rem;">Ready to Apply?</h3>
+                <p style="margin-bottom: 1.5rem; color: #4a5568;">
+                    Don't see the perfect role? Submit your profile and we'll notify you when new opportunities arise.
+                </p>
+                <a href="https://forms.gle/your-google-form-link" target="_blank" class="btn btn-secondary">
+                    📝 Submit General Application
+                </a>
+            </div>
+        {% else %}
+            <div class="card text-center">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
+                <h3 style="color: #4a5568; margin-bottom: 1rem;">No Openings Available</h3>
+                <p style="color: #718096; margin-bottom: 2rem;">
+                    We don't have any active job postings at the moment, but new opportunities are added regularly.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="/employee/register" class="btn">Register for Updates</a>
+                    <a href="/" class="btn btn-secondary">Back to Home</a>
+                </div>
+            </div>
+        {% endif %}
     </main>
+    
     <footer>
-        <a href="/">Back to Home</a>
+        <p>
+            <a href="/">🏠 Back to Home</a> | 
+            <a href="/employee/register">👨‍💼 Job Seeker Registration</a> | 
+            <a href="/employer/register">👔 Employer Portal</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Jobs Dunia - Your Career Success Partner
+        </p>
     </footer>
 </body>
 </html>

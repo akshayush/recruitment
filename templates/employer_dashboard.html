@@ -1,44 +1,167 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Employer Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Dashboard - Jobs Dunia</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h2>Employer Dashboard</h2>
-    <form action="/employer/post_job" method="post">
-        Employer ID: <input type="number" name="employer_id" required><br>
-        Hiring Profile: <input type="text" name="hiring_profile" required><br>
-        Qualification: <input type="text" name="qualification" required><br>
-        Experience (years): <input type="number" name="experience" required><br>
-        No. of Positions: <input type="number" name="positions" required><br>
-        Skills: <input type="text" name="skills" required><br>
-        Location: <input type="text" name="location" required><br>
-        CTC: <input type="text" name="ctc" required><br>
-        Job Responsibilities: <input type="text" name="responsibilities" required><br>
-        <input type="submit" value="Post Job">
-    </form>
-    <h3>All Job Posts</h3>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Profile</th>
-            <th>Qualification</th>
-            <th>Experience</th>
-            <th>Positions</th>
-            <th>Location</th>
-            <th>CTC</th>
-        </tr>
-        {% for job in jobs %}
-        <tr>
-            <td>{{ job.id }}</td>
-            <td>{{ job.hiring_profile }}</td>
-            <td>{{ job.qualification }}</td>
-            <td>{{ job.experience }}</td>
-            <td>{{ job.positions }}</td>
-            <td>{{ job.location }}</td>
-            <td>{{ job.ctc }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <header class="fade-in">
+        <h2>👔 Employer Dashboard</h2>
+        <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">Manage Your Job Postings & Find Top Talent</p>
+    </header>
+    
+    <main class="fade-in">
+        <div class="card">
+            <h3 style="color: #667eea; text-align: center; margin-bottom: 2rem;">📝 Post a New Job</h3>
+            <form action="/employer/post_job" method="post">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <label for="employer_id">👤 Employer ID</label>
+                        <input type="number" id="employer_id" name="employer_id" required placeholder="Enter your employer ID">
+                    </div>
+                    
+                    <div>
+                        <label for="hiring_profile">🎯 Job Title/Profile</label>
+                        <input type="text" id="hiring_profile" name="hiring_profile" required placeholder="e.g., Senior Accountant, CA Article, Finance Manager">
+                    </div>
+                    
+                    <div>
+                        <label for="qualification">🎓 Required Qualification</label>
+                        <input type="text" id="qualification" name="qualification" required placeholder="e.g., CA, CS, CMA, B.Com, M.Com">
+                    </div>
+                    
+                    <div>
+                        <label for="experience">⏱️ Experience Required (Years)</label>
+                        <input type="number" id="experience" name="experience" required min="0" max="30" placeholder="e.g., 2">
+                    </div>
+                    
+                    <div>
+                        <label for="positions">👥 Number of Positions</label>
+                        <input type="number" id="positions" name="positions" required min="1" max="100" placeholder="e.g., 3">
+                    </div>
+                    
+                    <div>
+                        <label for="location">📍 Job Location</label>
+                        <input type="text" id="location" name="location" required placeholder="e.g., Jaipur, Mumbai, Delhi, Remote">
+                    </div>
+                    
+                    <div>
+                        <label for="ctc">💰 CTC/Salary Package</label>
+                        <input type="text" id="ctc" name="ctc" required placeholder="e.g., 3-5 LPA, 25-30k/month">
+                    </div>
+                    
+                    <div>
+                        <label for="skills">🔧 Required Skills</label>
+                        <input type="text" id="skills" name="skills" required placeholder="e.g., Tally, Excel, GST, Audit, Tax">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1rem;">
+                    <label for="responsibilities">📋 Job Responsibilities & Description</label>
+                    <textarea id="responsibilities" name="responsibilities" required rows="4" 
+                              placeholder="Describe the key responsibilities, duties, and job requirements in detail..."></textarea>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <input type="submit" value="🚀 Post This Job" class="btn">
+                </div>
+            </form>
+        </div>
+        
+        <div class="card" style="margin-top: 3rem;">
+            <h3 style="color: #667eea; margin-bottom: 2rem;">📊 Your Posted Jobs ({{ jobs|length }} Total)</h3>
+            
+            {% if jobs %}
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>🎯 Job Profile</th>
+                                <th>🎓 Qualification</th>
+                                <th>⏱️ Experience</th>
+                                <th>👥 Positions</th>
+                                <th>📍 Location</th>
+                                <th>💰 CTC</th>
+                                <th>🔧 Skills</th>
+                                <th>📅 Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in jobs %}
+                            <tr class="slide-in">
+                                <td><strong>{{ job.id }}</strong></td>
+                                <td>
+                                    <strong style="color: #2d3748;">{{ job.hiring_profile }}</strong>
+                                </td>
+                                <td>
+                                    <span style="background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; color: #234e52;">
+                                        {{ job.qualification }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span style="background: linear-gradient(135deg, #fef5e7 0%, #fbd38d 100%); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; color: #744210;">
+                                        {{ job.experience }} Years
+                                    </span>
+                                </td>
+                                <td>
+                                    <span style="background: linear-gradient(135deg, #f0fff4 0%, #9ae6b4 100%); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; color: #22543d;">
+                                        {{ job.positions }}
+                                    </span>
+                                </td>
+                                <td>{{ job.location }}</td>
+                                <td><strong style="color: #38a169;">{{ job.ctc }}</strong></td>
+                                <td>
+                                    <div style="max-width: 150px; font-size: 0.85rem; color: #4a5568;">
+                                        {{ job.skills[:50] }}{% if job.skills|length > 50 %}...{% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span style="background: linear-gradient(135deg, #e6f3ff 0%, #90cdf4 100%); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; color: #1a365d;">
+                                        ✅ Active
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 3rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">📝</div>
+                    <h4 style="color: #4a5568; margin-bottom: 1rem;">No Jobs Posted Yet</h4>
+                    <p style="color: #718096; margin-bottom: 2rem;">
+                        Start by posting your first job using the form above to find qualified candidates.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="card" style="margin-top: 2rem; text-align: center;">
+            <h3 style="color: #667eea; margin-bottom: 1rem;">🎯 Need Help with Recruitment?</h3>
+            <p style="margin-bottom: 1.5rem; color: #4a5568;">
+                Our expert team can help you find the right candidates faster. Contact us for personalized recruitment services.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="mailto:employers@jobsdunia.com" class="btn">📧 Contact Support</a>
+                <a href="tel:+919876543210" class="btn btn-secondary">📞 Call Us</a>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>
+            <a href="/">🏠 Back to Home</a> | 
+            <a href="/openings">📋 View All Openings</a> | 
+            <a href="/employer/login">🔑 Logout</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Jobs Dunia - Empowering Employers to Find Top Talent
+        </p>
+    </footer>
 </body>
 </html>

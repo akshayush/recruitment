@@ -1,17 +1,115 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Employer Registration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Registration - Jobs Dunia</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h2>Employer Registration</h2>
-    <form action="/employer/register" method="post">
-        Employer Name: <input type="text" name="employer_name" required><br>
-        Mobile: <input type="text" name="mobile" required><br>
-        Email: <input type="email" name="email" required><br>
-        Password: <input type="password" name="password" required><br>
-        <input type="submit" value="Register">
-    </form>
-    <a href="/employer/login">Already registered? Login</a>
+    <header class="fade-in">
+        <h2>👔 Employer Registration</h2>
+        <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">Join Our Network of Leading Employers</p>
+    </header>
+    
+    <main class="fade-in">
+        <div class="card">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
+                <h3 style="color: #667eea; margin-bottom: 1rem;">Start Hiring Top Talent Today</h3>
+                <p style="color: #4a5568;">
+                    Register your company with Jobs Dunia and get access to a pool of qualified CA, CS, CMA, 
+                    and Commerce professionals across India.
+                </p>
+            </div>
+            
+            <form action="/employer/register" method="post">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <label for="employer_name">🏢 Company/Employer Name</label>
+                        <input type="text" id="employer_name" name="employer_name" required 
+                               placeholder="Enter your company name">
+                    </div>
+                    
+                    <div>
+                        <label for="mobile">📱 Mobile Number</label>
+                        <input type="tel" id="mobile" name="mobile" required 
+                               placeholder="+91 98765 43210" pattern="[0-9]{10}">
+                    </div>
+                    
+                    <div>
+                        <label for="email">📧 Email Address</label>
+                        <input type="email" id="email" name="email" required 
+                               placeholder="employer@company.com">
+                    </div>
+                    
+                    <div>
+                        <label for="password">🔒 Password</label>
+                        <input type="password" id="password" name="password" required 
+                               placeholder="Create a secure password" minlength="6">
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%); padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
+                    <h4 style="color: #22543d; margin-bottom: 1rem;">✅ What You Get:</h4>
+                    <ul style="color: #2f855a; list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem;">✓ Access to qualified CA, CS, CMA professionals</li>
+                        <li style="margin-bottom: 0.5rem;">✓ Easy job posting and candidate management</li>
+                        <li style="margin-bottom: 0.5rem;">✓ PAN India reach for your recruitment needs</li>
+                        <li style="margin-bottom: 0.5rem;">✓ Dedicated support from our placement team</li>
+                    </ul>
+                </div>
+                
+                <div style="text-align: center;">
+                    <input type="submit" value="🚀 Register as Employer" class="btn">
+                </div>
+            </form>
+            
+            <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+                <p style="color: #4a5568; margin-bottom: 1rem;">Already have an account?</p>
+                <a href="/employer/login" class="btn btn-secondary">🔑 Login to Dashboard</a>
+            </div>
+        </div>
+        
+        <div class="card" style="margin-top: 2rem;">
+            <h3 style="color: #667eea; text-align: center; margin-bottom: 1.5rem;">🌟 Why Choose Jobs Dunia?</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; text-align: center;">
+                <div>
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎯</div>
+                    <h4 style="color: #2d3748; margin-bottom: 0.5rem;">Specialized Network</h4>
+                    <p style="color: #718096; font-size: 0.9rem;">
+                        Access to the largest network of qualified finance and commerce professionals
+                    </p>
+                </div>
+                <div>
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚡</div>
+                    <h4 style="color: #2d3748; margin-bottom: 0.5rem;">Quick Hiring</h4>
+                    <p style="color: #718096; font-size: 0.9rem;">
+                        Streamlined process to help you find the right candidates faster
+                    </p>
+                </div>
+                <div>
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🤝</div>
+                    <h4 style="color: #2d3748; margin-bottom: 0.5rem;">Expert Support</h4>
+                    <p style="color: #718096; font-size: 0.9rem;">
+                        Dedicated team to assist you throughout the recruitment process
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>
+            <a href="/">🏠 Back to Home</a> | 
+            <a href="/employee/register">👨‍💼 Job Seeker Registration</a> | 
+            <a href="/openings">📋 Current Openings</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Jobs Dunia - Your Trusted Recruitment Partner
+        </p>
+    </footer>
 </body>
 </html>
