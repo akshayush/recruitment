@@ -11,3 +11,15 @@ run = ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port 3000"]
 [[ports]]
 localPort = 3000
 externalPort = 80
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 44979973
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -m uvicorn main:app --host 0.0.0.0 --port 3000 --reload"
