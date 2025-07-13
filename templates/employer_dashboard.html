@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employer Dashboard</title>
+</head>
+<body>
+    <h2>Employer Dashboard</h2>
+    <form action="/employer/post_job" method="post">
+        Employer ID: <input type="number" name="employer_id" required><br>
+        Hiring Profile: <input type="text" name="hiring_profile" required><br>
+        Qualification: <input type="text" name="qualification" required><br>
+        Experience (years): <input type="number" name="experience" required><br>
+        No. of Positions: <input type="number" name="positions" required><br>
+        Skills: <input type="text" name="skills" required><br>
+        Location: <input type="text" name="location" required><br>
+        CTC: <input type="text" name="ctc" required><br>
+        Job Responsibilities: <input type="text" name="responsibilities" required><br>
+        <input type="submit" value="Post Job">
+    </form>
+    <h3>All Job Posts</h3>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Profile</th>
+            <th>Qualification</th>
+            <th>Experience</th>
+            <th>Positions</th>
+            <th>Location</th>
+            <th>CTC</th>
+        </tr>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.id }}</td>
+            <td>{{ job.hiring_profile }}</td>
+            <td>{{ job.qualification }}</td>
+            <td>{{ job.experience }}</td>
+            <td>{{ job.positions }}</td>
+            <td>{{ job.location }}</td>
+            <td>{{ job.ctc }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

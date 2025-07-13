@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employer Registration</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h2>Employer Registration</h2>
+    </header>
+    <main>
+        <form action="/employer/register" method="post">
+            <label>Employer Name:</label>
+            <input type="text" name="employer_name" required>
+            <label>Mobile:</label>
+            <input type="text" name="mobile" required>
+            <label>Email:</label>
+            <input type="email" name="email" required>
+            <label>Password:</label>
+            <input type="password" name="password" required>
+            <input type="submit" value="Register">
+        </form>
+        <div>
+            <a href="/employer/login">Already registered? Login</a>
+        </div>
+    </main>
+    <footer>
+        <a href="/">Back to Home</a>
+    </footer>
+</body>
+</html>

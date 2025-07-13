@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Current Openings</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h2>Current Openings</h2>
+    </header>
+    <main>
+        <table>
+            <tr>
+                <th>Job Title</th>
+                <th>Profile</th>
+                <th>Qualification</th>
+                <th>Exp</th>
+                <th>Location</th>
+                <th>CTC</th>
+            </tr>
+            {% for job in jobs %}
+            <tr>
+                <td>{{ job.hiring_profile }}</td>
+                <td>{{ job.responsibilities }}</td>
+                <td>{{ job.qualification }}</td>
+                <td>{{ job.experience }}</td>
+                <td>{{ job.location }}</td>
+                <td>{{ job.ctc }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <p>
+            <a href="https://forms.gle/your-google-form-link" target="_blank">Apply via Google Form</a>
+        </p>
+    </main>
+    <footer>
+        <a href="/">Back to Home</a>
+    </footer>
+</body>
+</html>
