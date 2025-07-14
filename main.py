@@ -547,6 +547,8 @@ def employee_google_login(
             max_age=JWT_EXPIRATION_HOURS * 3600
         )
         return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Login failed")
 
 @app.get("/employee/dashboard", response_class=HTMLResponse)
 def employee_dashboard(
