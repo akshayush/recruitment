@@ -7,6 +7,68 @@
     <title>Current Job Openings - Jobs Dunia</title>
     <link rel="stylesheet" href="/static/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .filter-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .filter-input {
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .filter-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .pagination a, .pagination span {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #4a5568;
+            transition: all 0.3s ease;
+        }
+        .pagination a:hover {
+            background: #667eea;
+            color: white;
+        }
+        .pagination .current {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .pagination .disabled {
+            color: #a0aec0;
+            cursor: not-allowed;
+        }
+        .results-info {
+            text-align: center;
+            margin: 1rem 0;
+            color: #4a5568;
+            font-size: 0.95rem;
+        }
+    </style>
 </head>
 <body>
     <header class="fade-in">
@@ -15,12 +77,67 @@
     </header>
     
     <main class="fade-in">
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <h3 style="color: #667eea; margin-bottom: 1.5rem; text-align: center;">🔍 Find Your Perfect Job</h3>
+            <form method="GET" action="/openings">
+                <div class="filter-grid">
+                    <div>
+                        <label for="search_profile" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Job Profile</label>
+                        <input type="text" id="search_profile" name="search_profile" 
+                               value="{{ filters.search_profile }}" 
+                               placeholder="e.g., Software Engineer" 
+                               class="filter-input">
+                    </div>
+                    <div>
+                        <label for="search_qualification" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Qualification</label>
+                        <input type="text" id="search_qualification" name="search_qualification" 
+                               value="{{ filters.search_qualification }}" 
+                               placeholder="e.g., B.Tech, MCA" 
+                               class="filter-input">
+                    </div>
+                    <div>
+                        <label for="search_location" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Location</label>
+                        <input type="text" id="search_location" name="search_location" 
+                               value="{{ filters.search_location }}" 
+                               placeholder="e.g., Mumbai, Bangalore" 
+                               class="filter-input">
+                    </div>
+                    <div>
+                        <label for="min_experience" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Min Experience (Years)</label>
+                        <input type="number" id="min_experience" name="min_experience" 
+                               value="{{ filters.min_experience }}" 
+                               placeholder="0" min="0" max="50"
+                               class="filter-input">
+                    </div>
+                    <div>
+                        <label for="max_experience" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">Max Experience (Years)</label>
+                        <input type="number" id="max_experience" name="max_experience" 
+                               value="{{ filters.max_experience }}" 
+                               placeholder="50" min="0" max="50"
+                               class="filter-input">
+                    </div>
+                </div>
+                
+                <div style="text-align: center; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button type="submit" class="btn">🔍 Search Jobs</button>
+                    <a href="/openings" class="btn btn-secondary">🔄 Clear Filters</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Info -->
+        {% if pagination %}
+        <div class="results-info">
+            <strong>Showing {{ jobs|length }} of {{ pagination.total_jobs }} jobs</strong>
+            {% if pagination.total_pages > 1 %}
+                (Page {{ pagination.current_page }} of {{ pagination.total_pages }})
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Jobs Table -->
         {% if jobs %}
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h3 style="color: #667eea;">{{ jobs|length }} Active Job Openings</h3>
-                <p style="color: #4a5568;">Find the perfect role that matches your skills and experience</p>
-            </div>
-            
             <div class="table-container">
                 <table>
                     <thead>
@@ -75,6 +192,52 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            {% if pagination and pagination.total_pages > 1 %}
+            <div class="pagination">
+                {% if pagination.has_prev %}
+                    <a href="?page={{ pagination.prev_page }}{% for key, value in filters.items() %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        ← Previous
+                    </a>
+                {% else %}
+                    <span class="disabled">← Previous</span>
+                {% endif %}
+
+                {% set start_page = [1, pagination.current_page - 2]|max %}
+                {% set end_page = [pagination.total_pages, pagination.current_page + 2]|min %}
+
+                {% if start_page > 1 %}
+                    <a href="?page=1{% for key, value in filters.items() %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">1</a>
+                    {% if start_page > 2 %}
+                        <span>...</span>
+                    {% endif %}
+                {% endif %}
+
+                {% for page_num in range(start_page, end_page + 1) %}
+                    {% if page_num == pagination.current_page %}
+                        <span class="current">{{ page_num }}</span>
+                    {% else %}
+                        <a href="?page={{ page_num }}{% for key, value in filters.items() %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ page_num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if end_page < pagination.total_pages %}
+                    {% if end_page < pagination.total_pages - 1 %}
+                        <span>...</span>
+                    {% endif %}
+                    <a href="?page={{ pagination.total_pages }}{% for key, value in filters.items() %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ pagination.total_pages }}</a>
+                {% endif %}
+
+                {% if pagination.has_next %}
+                    <a href="?page={{ pagination.next_page }}{% for key, value in filters.items() %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        Next →
+                    </a>
+                {% else %}
+                    <span class="disabled">Next →</span>
+                {% endif %}
+            </div>
+            {% endif %}
             
             <div class="card" style="margin-top: 2rem; text-align: center;">
                 <h3 style="color: #667eea; margin-bottom: 1rem;">Ready to Apply?</h3>
@@ -88,12 +251,17 @@
         {% else %}
             <div class="card text-center">
                 <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
-                <h3 style="color: #4a5568; margin-bottom: 1rem;">No Openings Available</h3>
+                <h3 style="color: #4a5568; margin-bottom: 1rem;">No Jobs Found</h3>
                 <p style="color: #718096; margin-bottom: 2rem;">
-                    We don't have any active job postings at the moment, but new opportunities are added regularly.
+                    {% if pagination.total_jobs == 0 %}
+                        We don't have any active job postings at the moment, but new opportunities are added regularly.
+                    {% else %}
+                        No jobs match your current search criteria. Try adjusting your filters.
+                    {% endif %}
                 </p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="/employee/register" class="btn">Register for Updates</a>
+                    <a href="/openings" class="btn">🔄 Clear Filters</a>
+                    <a href="/employee/register" class="btn btn-secondary">Register for Updates</a>
                     <a href="/" class="btn btn-secondary">Back to Home</a>
                 </div>
             </div>
@@ -110,5 +278,25 @@
             &copy; 2025 Jobs Dunia - Your Career Success Partner
         </p>
     </footer>
+
+    <script>
+        // Auto-submit form when filters change (optional)
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const inputs = form.querySelectorAll('input');
+            
+            // Add debounce to prevent too many requests
+            let debounceTimer;
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        // Optional: Auto-submit on input change
+                        // form.submit();
+                    }, 500);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

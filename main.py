@@ -181,9 +181,69 @@ def home(request: Request):
 
 # --- Current Openings Page ---
 @app.get("/openings", response_class=HTMLResponse)
-def current_openings(request: Request, db: Session = Depends(get_db)):
-    jobs = db.query(JobPost).all()
-    return templates.TemplateResponse("current_openings.html", {"request": request, "jobs": jobs})
+def current_openings(
+    request: Request, 
+    db: Session = Depends(get_db),
+    page: int = 1,
+    search_profile: str = None,
+    search_qualification: str = None,
+    search_location: str = None,
+    min_experience: int = None,
+    max_experience: int = None
+):
+    # Start with base query
+    query = db.query(JobPost)
+    
+    # Apply filters
+    if search_profile:
+        query = query.filter(JobPost.hiring_profile.ilike(f"%{search_profile}%"))
+    
+    if search_qualification:
+        query = query.filter(JobPost.qualification.ilike(f"%{search_qualification}%"))
+    
+    if search_location:
+        query = query.filter(JobPost.location.ilike(f"%{search_location}%"))
+    
+    if min_experience is not None:
+        query = query.filter(JobPost.experience >= min_experience)
+    
+    if max_experience is not None:
+        query = query.filter(JobPost.experience <= max_experience)
+    
+    # Get total count for pagination
+    total_jobs = query.count()
+    
+    # Calculate pagination
+    per_page = 10
+    total_pages = (total_jobs + per_page - 1) // per_page
+    offset = (page - 1) * per_page
+    
+    # Get paginated results
+    jobs = query.offset(offset).limit(per_page).all()
+    
+    # Prepare pagination info
+    pagination = {
+        'current_page': page,
+        'total_pages': total_pages,
+        'total_jobs': total_jobs,
+        'has_prev': page > 1,
+        'has_next': page < total_pages,
+        'prev_page': page - 1 if page > 1 else None,
+        'next_page': page + 1 if page < total_pages else None
+    }
+    
+    return templates.TemplateResponse("current_openings.html", {
+        "request": request, 
+        "jobs": jobs,
+        "pagination": pagination,
+        "filters": {
+            "search_profile": search_profile or "",
+            "search_qualification": search_qualification or "",
+            "search_location": search_location or "",
+            "min_experience": min_experience or "",
+            "max_experience": max_experience or ""
+        }
+    })
 
 # --- Employer Registration/Login ---
 @app.get("/employer/register", response_class=HTMLResponse)
