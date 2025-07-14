@@ -47,7 +47,7 @@ from pathlib import Path
 import hashlib
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from models import Base, engine, Employer, Employee, JobPost
+from models import Base, engine, Employer, Employee, JobPost, JobApplication
 from database import get_db
 from schemas import EmployerCreate, EmployeeCreate, JobPostCreate
 
@@ -569,3 +569,192 @@ def employee_logout():
     response = RedirectResponse("/", status_code=302)
     response.delete_cookie("employee_token")
     return response
+
+# --- Job Application Routes ---
+@app.get("/job/{job_id}/apply", response_class=HTMLResponse)
+def job_apply_form(
+    request: Request,
+    job_id: int,
+    db: Session = Depends(get_db)
+):
+    job = db.query(JobPost).filter(JobPost.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    return templates.TemplateResponse("job_apply.html", {
+        "request": request,
+        "job": job
+    })
+
+@app.post("/job/{job_id}/apply")
+def submit_job_application(
+    request: Request,
+    job_id: int,
+    employee_name: str = Form(...),
+    employee_email: str = Form(...),
+    employee_mobile: str = Form(...),
+    employee_qualification: str = Form(...),
+    employee_experience: int = Form(...),
+    expected_ctc: str = Form(...),
+    available_from: str = Form(...),
+    cover_letter: str = Form(...),
+    why_interested: str = Form(...),
+    additional_info: str = Form(default=""),
+    cv: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    from datetime import datetime
+    from models import JobApplication
+    
+    # Rate limiting
+    client_ip = request.client.host
+    check_rate_limit(f"job_apply_{client_ip}", max_requests=5, window_minutes=60)
+
+    # Input validation
+    if not validate_email(employee_email):
+        raise HTTPException(status_code=400, detail="Invalid email format")
+
+    if not validate_mobile(employee_mobile):
+        raise HTTPException(status_code=400, detail="Invalid mobile number format")
+
+    if employee_experience < 0 or employee_experience > 50:
+        raise HTTPException(status_code=400, detail="Invalid experience range")
+
+    # File validation
+    if not cv.filename or not validate_file_type(cv.filename):
+        raise HTTPException(status_code=400, detail="Invalid file type. Only PDF, DOC, DOCX allowed")
+
+    if cv.size and cv.size > 5 * 1024 * 1024:  # 5MB limit
+        raise HTTPException(status_code=400, detail="File size too large. Maximum 5MB allowed")
+
+    # Check if job exists
+    job = db.query(JobPost).filter(JobPost.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    # Check if employee exists, if not create one
+    employee = db.query(Employee).filter(Employee.email == employee_email).first()
+    
+    if not employee:
+        # Secure file handling for CV
+        safe_filename = sanitize_filename(cv.filename)
+        timestamp = str(int(time.time()))
+        unique_filename = f"{timestamp}_{safe_filename}"
+
+        # Ensure CV directory exists
+        cv_dir = Path("static/cvs")
+        cv_dir.mkdir(parents=True, exist_ok=True)
+
+        cv_path = cv_dir / unique_filename
+
+        try:
+            content = cv.file.read()
+            # Additional security: check file content
+            if b'<script' in content.lower() or b'javascript' in content.lower():
+                raise HTTPException(status_code=400, detail="Potentially malicious file content detected")
+
+            with open(cv_path, "wb") as buffer:
+                buffer.write(content)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="File upload failed")
+
+        # Sanitize inputs
+        employee_name = sanitize_input(employee_name, 100)
+        employee_qualification = sanitize_input(employee_qualification, 100)
+
+        # Create new employee
+        employee = Employee(
+            name=employee_name,
+            mobile=employee_mobile,
+            email=employee_email,
+            qualification=employee_qualification,
+            experience=employee_experience,
+            current_profile="",
+            current_org="",
+            current_ctc="",
+            notice_period=available_from,
+            cv=str(cv_path)
+        )
+        db.add(employee)
+        db.commit()
+        db.refresh(employee)
+    else:
+        # If employee exists but didn't upload CV originally, handle CV upload
+        if cv.filename:
+            safe_filename = sanitize_filename(cv.filename)
+            timestamp = str(int(time.time()))
+            unique_filename = f"{timestamp}_{safe_filename}"
+
+            cv_dir = Path("static/cvs")
+            cv_dir.mkdir(parents=True, exist_ok=True)
+            cv_path = cv_dir / unique_filename
+
+            try:
+                content = cv.file.read()
+                if b'<script' in content.lower() or b'javascript' in content.lower():
+                    raise HTTPException(status_code=400, detail="Potentially malicious file content detected")
+
+                with open(cv_path, "wb") as buffer:
+                    buffer.write(content)
+                
+                # Update employee CV if they didn't have one
+                if not employee.cv:
+                    employee.cv = str(cv_path)
+                    db.commit()
+            except Exception as e:
+                raise HTTPException(status_code=500, detail="File upload failed")
+
+    # Check if already applied
+    existing_application = db.query(JobApplication).filter(
+        JobApplication.job_id == job_id,
+        JobApplication.employee_id == employee.id
+    ).first()
+    
+    if existing_application:
+        raise HTTPException(status_code=400, detail="You have already applied for this job")
+
+    # Sanitize text inputs
+    cover_letter = sanitize_input(cover_letter, 2000)
+    why_interested = sanitize_input(why_interested, 1000)
+    additional_info = sanitize_input(additional_info, 1000)
+    expected_ctc = sanitize_input(expected_ctc, 50)
+    available_from = sanitize_input(available_from, 100)
+
+    # Create job application
+    application = JobApplication(
+        job_id=job_id,
+        employee_id=employee.id,
+        cover_letter=cover_letter,
+        expected_ctc=expected_ctc,
+        available_from=available_from,
+        why_interested=why_interested,
+        additional_info=additional_info,
+        status="Applied",
+        applied_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    )
+    
+    db.add(application)
+    db.commit()
+    db.refresh(application)
+
+    return templates.TemplateResponse("application_success.html", {
+        "request": request,
+        "job": job,
+        "application": application
+    })
+
+@app.get("/employee/applications", response_class=HTMLResponse)
+def employee_applications(
+    request: Request,
+    current_employee: Employee = Depends(get_current_employee),
+    db: Session = Depends(get_db)
+):
+    applications = db.query(JobApplication).filter(
+        JobApplication.employee_id == current_employee.id
+    ).all()
+    
+    return templates.TemplateResponse("employee_applications.html", {
+        "request": request,
+        "employee": current_employee,
+        "applications": applications
+    })

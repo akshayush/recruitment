@@ -86,7 +86,7 @@
                         </div>
                         
                         <div style="text-align: center;">
-                            <button class="btn" onclick="applyForJob({{ job.id }})">📨 Apply Now</button>
+                            <a href="/job/{{ job.id }}/apply" class="btn">📨 Apply Now</a>
                         </div>
                     </div>
                     {% endfor %}
@@ -101,12 +101,12 @@
         </div>
 
         <!-- Recent Applications -->
-        {% if recent_applications %}
+        {% if employee.applications %}
         <div class="card">
             <h3 style="color: #667eea; margin-bottom: 1.5rem;">📊 Recent Applications</h3>
             <div style="display: grid; gap: 1rem;">
-                {% for application in recent_applications %}
-                <div style="border: 1px solid #e2e8f0; padding: 1rem; border-radius: 8px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+                {% for application in employee.applications[:3] %}
+                <div style="border: 1px solid #e2e8f0; padding: 1rem; border-radius: 8px; background:ius: 8px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
                     <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 0.5rem;">
                         <strong style="color: #2d3748;">{{ application.job.hiring_profile }}</strong>
                         <span style="background: 
@@ -158,9 +158,7 @@
     </footer>
 
     <script>
-        function applyForJob(jobId) {
-            // For now, just show an alert. You can implement actual application logic
-            alert('Application feature will be implemented soon! Job ID: ' + jobId);
+        // Application functionality is now fully integrated: ' + jobId);
             // TODO: Implement job application functionality
         }
     </script>
