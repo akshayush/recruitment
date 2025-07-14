@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - Jobs Dunia</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="fade-in">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div>
+                <h2>📊 My Job Applications</h2>
+                <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">Track Your Application Status</p>
+            </div>
+            <form action="/employee/logout" method="post" style="margin: 0;">
+                <button type="submit" class="btn btn-secondary" style="margin: 0;">🚪 Logout</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="fade-in">
+        <!-- Applications List -->
+        <div class="card">
+            <h3 style="color: #667eea; margin-bottom: 1.5rem;">📋 Application History</h3>
+            
+            {% if applications %}
+                <div style="display: grid; gap: 1.5rem;">
+                    {% for application in applications %}
+                    <div style="border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+                        <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 1rem;">
+                            <h4 style="color: #2d3748; margin: 0;">{{ application.job.hiring_profile }}</h4>
+                            <span style="background: 
+                                {% if application.status == 'Applied' %}#ffd700
+                                {% elif application.status == 'Reviewing' %}#4169e1
+                                {% elif application.status == 'Interview' %}#32cd32
+                                {% elif application.status == 'Selected' %}#228b22
+                                {% else %}#dc143c{% endif %}; 
+                                color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem;">
+                                {{ application.status }}
+                            </span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                            <div><strong>📍 Location:</strong> {{ application.job.location }}</div>
+                            <div><strong>💰 Expected CTC:</strong> {{ application.expected_ctc }}</div>
+                            <div><strong>📅 Applied Date:</strong> {{ application.applied_date }}</div>
+                            <div><strong>🕒 Available From:</strong> {{ application.available_from }}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <strong>📝 Cover Letter:</strong>
+                            <p style="margin-top: 0.5rem; color: #4a5568; font-style: italic;">
+                                "{{ application.cover_letter[:200] }}{% if application.cover_letter|length > 200 %}..."{% endif %}
+                            </p>
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <strong>🎯 Why Interested:</strong>
+                            <p style="margin-top: 0.5rem; color: #4a5568;">
+                                {{ application.why_interested[:150] }}{% if application.why_interested|length > 150 %}...{% endif %}
+                            </p>
+                        </div>
+                        
+                        {% if application.additional_info %}
+                        <div style="margin-bottom: 1rem;">
+                            <strong>ℹ️ Additional Info:</strong>
+                            <p style="margin-top: 0.5rem; color: #4a5568;">
+                                {{ application.additional_info }}
+                            </p>
+                        </div>
+                        {% endif %}
+                        
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <span style="font-size: 0.9rem; color: #718096;">
+                                Application ID: #{{ application.id }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 3rem; color: #4a5568;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+                    <h4>No Applications Yet</h4>
+                    <p style="margin-bottom: 2rem;">You haven't applied to any jobs yet. Start exploring opportunities!</p>
+                    <a href="/openings" class="btn">🔍 Browse Job Openings</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Stats -->
+        {% if applications %}
+        <div class="card">
+            <h3 style="color: #667eea; margin-bottom: 1.5rem;">📈 Application Statistics</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%); border-radius: 8px;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #c53030;">{{ applications|length }}</div>
+                    <div style="color: #742a2a; font-size: 0.9rem;">Total Applications</div>
+                </div>
+                
+                <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #fffbeb 0%, #fde68a 100%); border-radius: 8px;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #d69e2e;">
+                        {{ applications|selectattr("status", "equalto", "Applied")|list|length + applications|selectattr("status", "equalto", "Reviewing")|list|length }}
+                    </div>
+                    <div style="color: #744210; font-size: 0.9rem;">Pending</div>
+                </div>
+                
+                <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%); border-radius: 8px;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">✅</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #38a169;">
+                        {{ applications|selectattr("status", "equalto", "Interview")|list|length + applications|selectattr("status", "equalto", "Selected")|list|length }}
+                    </div>
+                    <div style="color: #276749; font-size: 0.9rem;">Progressed</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <h3 style="color: #667eea; margin-bottom: 1.5rem;">⚡ Quick Actions</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <a href="/openings" class="btn">🔍 Browse More Jobs</a>
+                <a href="/employee/dashboard" class="btn btn-secondary">📊 Dashboard</a>
+                <a href="/employee/profile" class="btn btn-secondary">✏️ Update Profile</a>
+                <a href="/" class="btn btn-secondary">🏠 Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>
+            <a href="/">🏠 Home</a> | 
+            <a href="/openings">📋 All Openings</a> | 
+            <a href="/employee/dashboard">👤 Dashboard</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Jobs Dunia - Your Career Success Partner
+        </p>
+    </footer>
+</body>
+</html>

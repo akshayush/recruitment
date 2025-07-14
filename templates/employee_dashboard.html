@@ -100,6 +100,39 @@
             {% endif %}
         </div>
 
+        <!-- Recent Applications -->
+        {% if recent_applications %}
+        <div class="card">
+            <h3 style="color: #667eea; margin-bottom: 1.5rem;">📊 Recent Applications</h3>
+            <div style="display: grid; gap: 1rem;">
+                {% for application in recent_applications %}
+                <div style="border: 1px solid #e2e8f0; padding: 1rem; border-radius: 8px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 0.5rem;">
+                        <strong style="color: #2d3748;">{{ application.job.hiring_profile }}</strong>
+                        <span style="background: 
+                            {% if application.status == 'Applied' %}#ffd700
+                            {% elif application.status == 'Reviewing' %}#4169e1
+                            {% elif application.status == 'Interview' %}#32cd32
+                            {% elif application.status == 'Selected' %}#228b22
+                            {% else %}#dc143c{% endif %}; 
+                            color: white; padding: 0.2rem 0.6rem; border-radius: 15px; font-size: 0.75rem;">
+                            {{ application.status }}
+                        </span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; font-size: 0.9rem; color: #4a5568;">
+                        <div>📍 {{ application.job.location }}</div>
+                        <div>📅 {{ application.applied_date[:10] }}</div>
+                        <div>💰 {{ application.expected_ctc }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <a href="/employee/applications" class="btn btn-secondary">📊 View All Applications</a>
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Quick Actions -->
         <div class="card">
             <h3 style="color: #667eea; margin-bottom: 1.5rem;">⚡ Quick Actions</h3>
@@ -116,6 +149,7 @@
         <p>
             <a href="/">🏠 Home</a> | 
             <a href="/openings">📋 All Openings</a> | 
+            <a href="/employee/applications">📊 My Applications</a> | 
             <a href="/employee/profile">👤 My Profile</a>
         </p>
         <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">

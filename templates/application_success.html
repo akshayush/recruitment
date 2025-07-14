@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Submitted - Jobs Dunia</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="fade-in">
+        <h2>✅ Application Submitted</h2>
+        <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">Your Application Has Been Successfully Submitted</p>
+    </header>
+
+    <main class="fade-in">
+        <div class="card text-center">
+            <div style="font-size: 4rem; margin-bottom: 1.5rem;">🎉</div>
+            <h3 style="color: #38a169; margin-bottom: 1rem;">Application Submitted Successfully!</h3>
+            <p style="color: #4a5568; margin-bottom: 2rem; font-size: 1.1rem;">
+                Thank you for applying to the <strong>{{ job.hiring_profile }}</strong> position. 
+                We have received your application and will review it shortly.
+            </p>
+            
+            <div style="background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+                <h4 style="color: #276749; margin-bottom: 1rem;">📋 Application Summary</h4>
+                <div style="text-align: left; color: #2d3748;">
+                    <p><strong>Job:</strong> {{ job.hiring_profile }}</p>
+                    <p><strong>Location:</strong> {{ job.location }}</p>
+                    <p><strong>Applied Date:</strong> {{ application.applied_date }}</p>
+                    <p><strong>Status:</strong> <span style="color: #38a169;">{{ application.status }}</span></p>
+                </div>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+                <h4 style="color: #2c5282; margin-bottom: 1rem;">📞 What's Next?</h4>
+                <ul style="text-align: left; color: #2d3748; list-style: none; padding: 0;">
+                    <li style="margin-bottom: 0.5rem;">🔍 Our HR team will review your application</li>
+                    <li style="margin-bottom: 0.5rem;">📧 You'll receive an email update within 3-5 business days</li>
+                    <li style="margin-bottom: 0.5rem;">📱 We may contact you for a preliminary discussion</li>
+                    <li>🤝 Qualified candidates will be invited for an interview</li>
+                </ul>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/openings" class="btn">🔍 Browse More Jobs</a>
+                <a href="/employee/login" class="btn btn-secondary">👤 Employee Login</a>
+                <a href="/" class="btn btn-secondary">🏠 Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>
+            <a href="/">🏠 Home</a> | 
+            <a href="/openings">📋 All Openings</a> | 
+            <a href="/employee/register">👤 Register</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Jobs Dunia - Your Career Success Partner
+        </p>
+    </footer>
+</body>
+</html>

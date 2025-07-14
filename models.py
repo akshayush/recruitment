@@ -42,3 +42,20 @@ class Employee(Base):
     current_ctc = Column(String)
     notice_period = Column(String)
     cv = Column(String)
+    applications = relationship("JobApplication", back_populates="employee")
+
+class JobApplication(Base):
+    __tablename__ = "job_applications"
+    id = Column(Integer, primary_key=True, index=True)
+    job_id = Column(Integer, ForeignKey("jobposts.id"))
+    employee_id = Column(Integer, ForeignKey("employees.id"))
+    cover_letter = Column(String)
+    expected_ctc = Column(String)
+    available_from = Column(String)
+    why_interested = Column(String)
+    additional_info = Column(String)
+    status = Column(String, default="Applied")  # Applied, Reviewing, Interview, Rejected, Selected
+    applied_date = Column(String)
+    
+    job = relationship("JobPost")
+    employee = relationship("Employee", back_populates="applications")

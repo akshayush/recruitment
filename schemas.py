@@ -28,3 +28,12 @@ class JobPostCreate(BaseModel):
     location: str
     ctc: str
     responsibilities: str
+
+class JobApplicationCreate(BaseModel):
+    job_id: int
+    employee_id: int
+    cover_letter: str
+    expected_ctc: str
+    available_from: str
+    why_interested: str
+    additional_info: str
