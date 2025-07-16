@@ -30,25 +30,33 @@
                     <div>
                         <label for="name">👤 Full Name</label>
                         <input type="text" id="name" name="name" required 
-                               placeholder="Enter your full name">
+                               placeholder="Enter your full name"
+                               pattern="^[A-Za-z\s]{2,50}$" maxlength="50"
+                               title="Only letters and spaces, 2-50 characters">
                     </div>
                     
                     <div>
                         <label for="mobile">📱 Mobile Number</label>
                         <input type="tel" id="mobile" name="mobile" required 
-                               placeholder="+91 98765 43210" pattern="[0-9]{10}">
+                               placeholder="9876543210"
+                               pattern="^\d{10}$" maxlength="10"
+                              title="Enter a valid 10-digit mobile number">
                     </div>
                     
                     <div>
                         <label for="email">📧 Email Address</label>
                         <input type="email" id="email" name="email" required 
-                               placeholder="your.email@example.com">
+                               placeholder="your.email@example.com"
+                               pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                               title="Enter a valid email address">
                     </div>
                     
                     <div>
                         <label for="qualification">🎓 Highest Qualification</label>
                         <input type="text" id="qualification" name="qualification" required 
-                               placeholder="e.g., CA, CS, CMA, B.Com, M.Com">
+                               placeholder="e.g., CA, CS, CMA, B.Com, M.Com"
+                               pattern="^[A-Za-z\s\.,]{2,50}$" maxlength="50"
+                               title="Only letters, spaces, comma, dot allowed, 2-50 characters">
                     </div>
                     
                     <div>
@@ -60,25 +68,29 @@
                     <div>
                         <label for="current_profile">💼 Current Job Profile</label>
                         <input type="text" id="current_profile" name="current_profile" required 
-                               placeholder="e.g., Senior Accountant, Tax Consultant">
+                               placeholder="e.g., Senior Accountant, Tax Consultant"
+                               pattern="^[A-Za-z\s,]{2,50}$" maxlength="50"
+                            title="Only letters, spaces, comma allowed, 2-50 characters">
                     </div>
                     
                     <div>
                         <label for="current_org">🏢 Current Organization</label>
                         <input type="text" id="current_org" name="current_org" required 
-                               placeholder="Enter your current company name">
+                               placeholder="Enter your current company name" maxlength="100">
                     </div>
                     
                     <div>
                         <label for="current_ctc">💰 Current CTC/Salary</label>
                         <input type="text" id="current_ctc" name="current_ctc" required 
-                               placeholder="e.g., 5 LPA, 40k/month">
+                               placeholder="e.g., 5 LPA, 40k/month"
+                               pattern="^[0-9kK\/\s\.,]+(LPA|month)?$"
+                              title="Format: e.g., 5 LPA, 40k/month">
                     </div>
                     
                     <div>
                         <label for="notice_period">📅 Notice Period</label>
                         <input type="text" id="notice_period" name="notice_period" required 
-                               placeholder="e.g., 30 days, Immediate, 2 months">
+                               placeholder="e.g., 30 days, Immediate, 2 months" maxlength="30">
                     </div>
                     
                     <div>

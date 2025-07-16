@@ -22,12 +22,16 @@
                     
                     <div>
                         <label for="hiring_profile">🎯 Job Title/Profile</label>
-                        <input type="text" id="hiring_profile" name="hiring_profile" required placeholder="e.g., Senior Accountant, CA Article, Finance Manager">
+                        <input type="text" id="hiring_profile" name="hiring_profile" required placeholder="e.g., Senior Accountant, CA Article, Finance Manager"
+                            pattern="^[A-Za-z\s,]{2,50}$" maxlength="50"
+                              title="Only letters, spaces, and commas, 2-50 characters">
                     </div>
                     
                     <div>
                         <label for="qualification">🎓 Required Qualification</label>
-                        <input type="text" id="qualification" name="qualification" required placeholder="e.g., CA, CS, CMA, B.Com, M.Com">
+                        <input type="text" id="qualification" name="qualification" required placeholder="e.g., CA, CS, CMA, B.Com, M.Com"
+                               pattern="^[A-Za-z\s\.,]{2,50}$" maxlength="50"
+                               title="Only letters, spaces, comma, dot allowed, 2-50 characters">
                     </div>
                     
                     <div>
@@ -42,24 +46,32 @@
                     
                     <div>
                         <label for="location">📍 Job Location</label>
-                        <input type="text" id="location" name="location" required placeholder="e.g., Jaipur, Mumbai, Delhi, Remote">
+                        <input type="text" id="location" name="location" required placeholder="e.g., Jaipur, Mumbai, Delhi, Remote"
+                               pattern="^[A-Za-z\s,]{2,50}$" maxlength="50"
+                              title="Only letters, spaces, and commas, 2-50 characters">
                     </div>
                     
                     <div>
                         <label for="ctc">💰 CTC/Salary Package</label>
-                        <input type="text" id="ctc" name="ctc" required placeholder="e.g., 3-5 LPA, 25-30k/month">
+                        <input type="text" id="ctc" name="ctc" required placeholder="e.g., 3-5 LPA, 25-30k/month"
+                               pattern="^[0-9kK\/\s\-,]+(LPA|month)?$"
+                               title="Format: e.g., 3-5 LPA, 25-30k/month">
                     </div>
                     
                     <div>
                         <label for="skills">🔧 Required Skills</label>
-                        <input type="text" id="skills" name="skills" required placeholder="e.g., Tally, Excel, GST, Audit, Tax">
+                        <input type="text" id="skills" name="skills" required placeholder="e.g., Tally, Excel, GST, Audit, Tax"
+                               pattern="^[A-Za-z\s,]{2,100}$" maxlength="100"
+                               title="Only letters, spaces, and commas, 2-100 characters">
                     </div>
                 </div>
                 
                 <div style="margin-top: 1rem;">
                     <label for="responsibilities">📋 Job Responsibilities & Description</label>
                     <textarea id="responsibilities" name="responsibilities" required rows="4" 
-                              placeholder="Describe the key responsibilities, duties, and job requirements in detail..."></textarea>
+                              placeholder="Describe the key responsibilities, duties, and job requirements in detail..."
+                              minlength="10" maxlength="1000"
+                              title="Description must be 10-1000 characters"></textarea>
                 </div>
                 
                 <div style="text-align: center; margin-top: 2rem;">
