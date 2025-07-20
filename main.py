@@ -169,6 +169,68 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 Base.metadata.create_all(bind=engine)
 
+@app.get("/employee/profile")
+def view_employee_profile(request: Request, db: Session = Depends(get_db), employee_id: int = 1):
+    employee = db.query(Employee).filter(Employee.id == employee_id).first()
+    return templates.TemplateResponse("employee_profile.html", {"request": request, "employee": employee})
+
+@app.post("/employee/profile")
+def update_employee_profile(
+    request: Request,
+    name: str = Form(...),
+    email: str = Form(...),
+    mobile: str = Form(...),
+    qualification: str = Form(...),
+    experience: int = Form(...),
+    current_profile: str = Form(""),
+    current_org: str = Form(""),
+    current_ctc: str = Form(""),
+    notice_period: str = Form(""),
+    db: Session = Depends(get_db),
+    employee_id: int = 1
+):
+    employee = db.query(Employee).filter(Employee.id == employee_id).first()
+    if employee:
+        employee.name = name
+        employee.email = email
+        employee.mobile = mobile
+        employee.qualification = qualification
+        employee.experience = experience
+        employee.current_profile = current_profile
+        employee.current_org = current_org
+        employee.current_ctc = current_ctc
+        employee.notice_period = notice_period
+        db.commit()
+    return RedirectResponse("/employee/profile", status_code=303)
+
+
+@app.get("/employer/profile")
+def view_employer_profile(request: Request, db: Session = Depends(get_db), employer_id: int = 1):
+    employer = db.query(Employer).filter(Employer.id == employer_id).first()
+    return templates.TemplateResponse("employer_profile.html", {"request": request, "employer": employer})
+
+@app.post("/employer/profile")
+def update_employer_profile(
+    request: Request,
+    employer_name: str = Form(...),
+    email: str = Form(...),
+    mobile: str = Form(...),
+    contact_person: str = Form(""),
+    address: str = Form(""),
+    db: Session = Depends(get_db),
+    employer_id: int = 1
+):
+    employer = db.query(Employer).filter(Employer.id == employer_id).first()
+    if employer:
+        employer.employer_name = employer_name
+        employer.email = email
+        employer.mobile = mobile
+        employer.contact_person = contact_person
+        employer.address = address
+        db.commit()
+    return RedirectResponse("/employer/profile", status_code=303)
+
+
 # --- Home Page ---
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
@@ -256,6 +318,8 @@ def employer_register(
     mobile: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
+    contact_person: str = Form(...),
+    address: str = Form(...),
     db: Session = Depends(get_db)
 ):
     # Rate limiting
@@ -272,26 +336,37 @@ def employer_register(
     if len(password) < 8:
         raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
 
-    # Check for duplicate email using parameterized query
+    if not re.match(r"^[A-Za-z\s]{2,50}$", contact_person):
+        raise HTTPException(status_code=400, detail="Contact person name must be 2-50 letters/spaces.")
+
+    if not address or len(address.strip()) < 5:
+        raise HTTPException(status_code=400, detail="Address must be at least 5 characters.")
+
+    # Check for duplicate email
     existing_employer = db.query(Employer).filter(Employer.email == email).first()
     if existing_employer:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     # Sanitize inputs
     employer_name = sanitize_input(employer_name, 200)
+    contact_person = sanitize_input(contact_person, 50)
+    address = sanitize_input(address, 200)
 
     # Hash password before storing
     hashed_password = generate_password_hash(password)
 
     employer = Employer(
-        employer_name=employer_name, 
-        mobile=mobile, 
-        email=email, 
-        password=hashed_password
+        employer_name=employer_name,
+        mobile=mobile,
+        email=email,
+        password=hashed_password,
+        contact_person=contact_person,
+        address=address
     )
     db.add(employer)
     db.commit()
     return RedirectResponse("/employer/login", status_code=302)
+
 
 @app.get("/employer/login", response_class=HTMLResponse)
 def employer_login_form(request: Request):
@@ -405,6 +480,7 @@ def employee_register(
     name: str = Form(...),
     mobile: str = Form(...),
     email: str = Form(...),
+    password: str = Form(...),  # <-- Add password field
     qualification: str = Form(...),
     experience: int = Form(...),
     current_profile: str = Form(...),
@@ -425,6 +501,9 @@ def employee_register(
     if not validate_mobile(mobile):
         raise HTTPException(status_code=400, detail="Invalid mobile number format")
 
+    if len(password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters long")
+
     if experience < 0 or experience > 50:
         raise HTTPException(status_code=400, detail="Invalid experience range")
 
@@ -432,7 +511,7 @@ def employee_register(
     if not cv.filename or not validate_file_type(cv.filename):
         raise HTTPException(status_code=400, detail="Invalid file type. Only PDF, DOC, DOCX allowed")
 
-    if cv.size and cv.size > 5 * 1024 * 1024:  # 5MB limit
+    if hasattr(cv, "size") and cv.size and cv.size > 5 * 1024 * 1024:  # 5MB limit
         raise HTTPException(status_code=400, detail="File size too large. Maximum 5MB allowed")
 
     # Check for duplicate email using parameterized query
@@ -443,7 +522,7 @@ def employee_register(
     # Secure file handling
     safe_filename = sanitize_filename(cv.filename)
     timestamp = str(int(time.time()))
-    unique_filename = f"{timestamp}_{safe_filename}"
+    unique_filename = f"{email}_{timestamp}_{safe_filename}"
 
     # Ensure CV directory exists
     cv_dir = Path("static/cvs")
@@ -470,15 +549,26 @@ def employee_register(
     current_ctc = sanitize_input(current_ctc, 50)
     notice_period = sanitize_input(notice_period, 50)
 
+    # Hash the password before saving
+    hashed_password = generate_password_hash(password)
+
     employee = Employee(
-        name=name, mobile=mobile, email=email, qualification=qualification,
-        experience=experience, current_profile=current_profile,
-        current_org=current_org, current_ctc=current_ctc,
-        notice_period=notice_period, cv=str(cv_path)
+        name=name,
+        mobile=mobile,
+        email=email,
+        password=hashed_password,  # <-- Save hashed password
+        qualification=qualification,
+        experience=experience,
+        current_profile=current_profile,
+        current_org=current_org,
+        current_ctc=current_ctc,
+        notice_period=notice_period,
+        cv=str(cv_path)
     )
     db.add(employee)
     db.commit()
     return RedirectResponse("/", status_code=302)
+
 
 @app.post("/employer/logout")
 def employer_logout():
@@ -493,6 +583,35 @@ def employee_login_form(request: Request):
         "request": request,
         "google_client_id": GOOGLE_CLIENT_ID
     })
+
+
+@app.post("/employee/login")
+def employee_login(
+    request: Request,
+    email: str = Form(...),
+    password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    employee = db.query(Employee).filter(Employee.email == email).first()
+    if not employee or not check_password_hash(employee.password, password):
+        # Render login page with error message
+        return templates.TemplateResponse(
+            "employee_login.html",
+            {"request": request, "error": "Invalid email or password"}
+        )
+    # Create JWT token
+    token = create_jwt_token(employee.id, "employee")
+
+    response = RedirectResponse("/employee/dashboard", status_code=302)
+    response.set_cookie(
+        key="employee_token",
+        value=token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        max_age=JWT_EXPIRATION_HOURS * 3600
+    )
+    return response
 
 @app.post("/employee/google-login")
 def employee_google_login(

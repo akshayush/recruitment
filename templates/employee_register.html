@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,7 +39,7 @@
                         <input type="tel" id="mobile" name="mobile" required 
                                placeholder="9876543210"
                                pattern="^\d{10}$" maxlength="10"
-                              title="Enter a valid 10-digit mobile number">
+                               title="Enter a valid 10-digit mobile number">
                     </div>
                     
                     <div>
@@ -49,6 +48,15 @@
                                placeholder="your.email@example.com"
                                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                                title="Enter a valid email address">
+                    </div>
+
+                    <div>
+                        <label for="password">🔒 Password</label>
+                        <input type="password" id="password" name="password" required
+                               placeholder="Create a secure password"
+                               minlength="6" maxlength="64"
+                               pattern=".{6,64}"
+                               title="Password must be 6-64 characters">
                     </div>
                     
                     <div>
@@ -70,7 +78,7 @@
                         <input type="text" id="current_profile" name="current_profile" required 
                                placeholder="e.g., Senior Accountant, Tax Consultant"
                                pattern="^[A-Za-z\s,]{2,50}$" maxlength="50"
-                            title="Only letters, spaces, comma allowed, 2-50 characters">
+                               title="Only letters, spaces, comma allowed, 2-50 characters">
                     </div>
                     
                     <div>
@@ -84,7 +92,7 @@
                         <input type="text" id="current_ctc" name="current_ctc" required 
                                placeholder="e.g., 5 LPA, 40k/month"
                                pattern="^[0-9kK\/\s\.,]+(LPA|month)?$"
-                              title="Format: e.g., 5 LPA, 40k/month">
+                               title="Format: e.g., 5 LPA, 40k/month">
                     </div>
                     
                     <div>

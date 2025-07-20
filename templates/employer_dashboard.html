@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,76 +12,80 @@
         <h2>👔 Employer Dashboard</h2>
         <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">Manage Your Job Postings & Find Top Talent</p>
     </header>
-    
+
+    <!-- Profile Card -->
+    <div class="card" style="margin: 2rem auto 2rem auto; max-width: 700px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2 style="color: #4a5568; margin-bottom: 0.5rem;">Welcome, {{ employer.employer_name }}</h2>
+            <p style="color: #718096; font-size: 0.95rem; margin-bottom: 0;">
+                <strong>Email:</strong> {{ employer.email }}<br>
+                <strong>Mobile:</strong> {{ employer.mobile }}
+            </p>
+        </div>
+        <div>
+            <a href="/employer/profile" class="btn btn-secondary" style="margin-right: 0.5rem;">👁️ View/Edit Profile</a>
+        </div>
+    </div>
+
     <main class="fade-in">
         <div class="card">
             <h3 style="color: #667eea; text-align: center; margin-bottom: 2rem;">📝 Post a New Job</h3>
             <form action="/employer/post_job" method="post">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-                    
                     <div>
                         <label for="hiring_profile">🎯 Job Title/Profile</label>
                         <input type="text" id="hiring_profile" name="hiring_profile" required placeholder="e.g., Senior Accountant, CA Article, Finance Manager"
                             pattern="^[A-Za-z\s,]{2,50}$" maxlength="50"
-                              title="Only letters, spaces, and commas, 2-50 characters">
+                            title="Only letters, spaces, and commas, 2-50 characters">
                     </div>
-                    
                     <div>
                         <label for="qualification">🎓 Required Qualification</label>
                         <input type="text" id="qualification" name="qualification" required placeholder="e.g., CA, CS, CMA, B.Com, M.Com"
-                               pattern="^[A-Za-z\s\.,]{2,50}$" maxlength="50"
-                               title="Only letters, spaces, comma, dot allowed, 2-50 characters">
+                            pattern="^[A-Za-z\s\.,]{2,50}$" maxlength="50"
+                            title="Only letters, spaces, comma, dot allowed, 2-50 characters">
                     </div>
-                    
                     <div>
                         <label for="experience">⏱️ Experience Required (Years)</label>
                         <input type="number" id="experience" name="experience" required min="0" max="30" placeholder="e.g., 2">
                     </div>
-                    
                     <div>
                         <label for="positions">👥 Number of Positions</label>
                         <input type="number" id="positions" name="positions" required min="1" max="100" placeholder="e.g., 3">
                     </div>
-                    
                     <div>
                         <label for="location">📍 Job Location</label>
                         <input type="text" id="location" name="location" required placeholder="e.g., Jaipur, Mumbai, Delhi, Remote"
-                               pattern="^[A-Za-z\s,]{2,50}$" maxlength="50"
-                              title="Only letters, spaces, and commas, 2-50 characters">
+                            pattern="^[A-Za-z\s,]{2,50}$" maxlength="50"
+                            title="Only letters, spaces, and commas, 2-50 characters">
                     </div>
-                    
                     <div>
                         <label for="ctc">💰 CTC/Salary Package</label>
                         <input type="text" id="ctc" name="ctc" required placeholder="e.g., 3-5 LPA, 25-30k/month"
-                               pattern="^[0-9kK\/\s\-,]+(LPA|month)?$"
-                               title="Format: e.g., 3-5 LPA, 25-30k/month">
+                            pattern="^[0-9kK\/\s\-,]+(LPA|month)?$"
+                            title="Format: e.g., 3-5 LPA, 25-30k/month">
                     </div>
-                    
                     <div>
                         <label for="skills">🔧 Required Skills</label>
                         <input type="text" id="skills" name="skills" required placeholder="e.g., Tally, Excel, GST, Audit, Tax"
-                               pattern="^[A-Za-z\s,]{2,100}$" maxlength="100"
-                               title="Only letters, spaces, and commas, 2-100 characters">
+                            pattern="^[A-Za-z\s,]{2,100}$" maxlength="100"
+                            title="Only letters, spaces, and commas, 2-100 characters">
                     </div>
                 </div>
-                
                 <div style="margin-top: 1rem;">
                     <label for="responsibilities">📋 Job Responsibilities & Description</label>
-                    <textarea id="responsibilities" name="responsibilities" required rows="4" 
-                              placeholder="Describe the key responsibilities, duties, and job requirements in detail..."
-                              minlength="10" maxlength="1000"
-                              title="Description must be 10-1000 characters"></textarea>
+                    <textarea id="responsibilities" name="responsibilities" required rows="4"
+                        placeholder="Describe the key responsibilities, duties, and job requirements in detail..."
+                        minlength="10" maxlength="1000"
+                        title="Description must be 10-1000 characters"></textarea>
                 </div>
-                
                 <div style="text-align: center; margin-top: 2rem;">
                     <input type="submit" value="🚀 Post This Job" class="btn">
                 </div>
             </form>
         </div>
-        
+
         <div class="card" style="margin-top: 3rem;">
             <h3 style="color: #667eea; margin-bottom: 2rem;">📊 Your Posted Jobs ({{ jobs|length }} Total)</h3>
-            
             {% if jobs %}
                 <div class="table-container">
                     <table>
@@ -148,7 +151,7 @@
                 </div>
             {% endif %}
         </div>
-        
+
         <div class="card" style="margin-top: 2rem; text-align: center;">
             <h3 style="color: #667eea; margin-bottom: 1rem;">🎯 Need Help with Recruitment?</h3>
             <p style="margin-bottom: 1.5rem; color: #4a5568;">
@@ -160,7 +163,7 @@
             </div>
         </div>
     </main>
-    
+
     <footer>
         <p>
             <a href="/">🏠 Back to Home</a> | 

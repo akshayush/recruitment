@@ -12,6 +12,8 @@ class Employer(Base):
     employer_name = Column(String)
     mobile = Column(String)
     email = Column(String, unique=True)
+    contact_person = Column(String)  # Ensure this exists
+    address = Column(String)          # Ensure this exists
     password = Column(String)
     jobs = relationship("JobPost", back_populates="employer")
 
@@ -35,6 +37,7 @@ class Employee(Base):
     name = Column(String)
     mobile = Column(String)
     email = Column(String, unique=True)
+    password = Column(String)  # <-- Add this line
     qualification = Column(String)
     experience = Column(Integer)
     current_profile = Column(String)

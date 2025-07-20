@@ -52,6 +52,20 @@
                     </div>
                     
                     <div>
+            <label for="contact_person">👤 Contact Person Name</label>
+            <input type="text" id="contact_person" name="contact_person" required
+                   placeholder="Enter contact person's name"
+                   pattern="^[A-Za-z\s]{2,50}$" maxlength="50"
+                   title="Only letters and spaces, 2-50 characters">
+        </div>
+
+        <div>
+            <label for="address">🏠 Company Address</label>
+            <textarea id="address" name="address" rows="3" maxlength="200" required
+                placeholder="Enter company address"></textarea>
+        </div>
+
+                    <div>
                         <label for="password">🔒 Password</label>
                         <input type="password" id="password" name="password" required 
                                placeholder="Create a secure password"
