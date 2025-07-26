@@ -169,6 +169,32 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 Base.metadata.create_all(bind=engine)
 
+@app.get("/contact-us")
+def contact_us_form(request: Request):
+    return templates.TemplateResponse("contact_us.html", {"request": request})
+
+@app.post("/contact-us")
+def contact_us_submit(
+    request: Request,
+    name: str = Form(...),
+    email: str = Form(...),
+    message: str = Form(...),
+):
+    # Basic validation
+    if len(name) < 2 or len(message) < 10:
+        return templates.TemplateResponse(
+            "contact_us.html",
+            {"request": request, "error": "Please enter a valid name and message."}
+        )
+    # Here you can add logic to send email or save to DB
+    # For now, just show a success message
+    return templates.TemplateResponse(
+        "contact_us.html",
+        {"request": request, "success": "Thank you for contacting us! We will get back to you soon."}
+    )
+
+
+
 @app.get("/employee/profile")
 def view_employee_profile(request: Request, db: Session = Depends(get_db), employee_id: int = 1):
     employee = db.query(Employee).filter(Employee.id == employee_id).first()

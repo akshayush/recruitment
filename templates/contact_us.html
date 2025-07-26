@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us | Jobs Dunia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="fade-in">
+        <h2>📞 Contact Us</h2>
+        <p style="color: #90cdf4; font-size: 1.1rem; margin-top: 1rem;">We'd love to hear from you!</p>
+    </header>
+    <main class="fade-in">
+        <div class="card" style="max-width: 500px; margin: 2rem auto;">
+            <form action="/contact-us" method="post" class="form-vertical">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required maxlength="50" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Your Email</label>
+                    <input type="email" id="email" name="email" required maxlength="100" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required rows="4" maxlength="1000" placeholder="Type your message here..."></textarea>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn">📨 Send Message</button>
+                    {% if success %}
+                        <div style="color: #38a169; margin-top: 1rem; font-weight: 500;">
+                            {{ success }}
+                        </div>
+                    {% endif %}
+                    {% if error %}
+                        <div style="color: #e53e3e; margin-top: 1rem; font-weight: 500;">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                </div>
+            </form>
+            <div style="margin-top: 2rem; text-align: center;">
+                <p style="color: #4a5568;">Or reach us directly:</p>
+                <p style="color: #2d3748;">
+                    <strong>Email:</strong> support@jobsdunia.com<br>
+                    <strong>Phone:</strong> +91-9876543210
+                </p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>
+            <a href="/">🏠 Back to Home</a> | 
+            <a href="/openings">📋 Current Openings</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Jobs Dunia - Empowering Careers, Creating Futures
+        </p>
+    </footer>
+</body>
+</html>
