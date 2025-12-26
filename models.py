@@ -7,7 +7,8 @@ import os
 Base = declarative_base()
 
 # TiDB Cloud connection configuration
-TIDB_HOST = os.getenv("TIDB_HOST", "gateway01.ap-southeast-1.prod.aws.tidbcloud.com")
+TIDB_HOST = os.getenv("TIDB_HOST",
+                      "gateway01.ap-southeast-1.prod.aws.tidbcloud.com")
 TIDB_PORT = int(os.getenv("TIDB_PORT", "4000"))
 TIDB_USER = os.getenv("TIDB_USER", "35V1p44dnfZWLPW.root")
 TIDB_PASSWORD = os.getenv("TIDB_PASSWORD", "9So0jsaVVAHJ5Il5")
@@ -16,24 +17,25 @@ TIDB_CA_PATH = os.getenv("TIDB_CA_PATH", "./ca_cert.pem")
 
 # SQLAlchemy MySQL connection string with mysql+pymysql driver
 DATABASE_URL = f"mysql+pymysql://{TIDB_USER}:{TIDB_PASSWORD}@{TIDB_HOST}:{TIDB_PORT}/{TIDB_DATABASE}"
-engine = create_engine(
-    DATABASE_URL, 
-    echo=False,
-    connect_args={
-        "ssl_ca": TIDB_CA_PATH,
-        "ssl_verify_cert": True,
-        "ssl_verify_identity": True,
-    }
-)
+engine = create_engine(DATABASE_URL,
+                       echo=False,
+                       connect_args={
+                           "ssl_ca": TIDB_CA_PATH,
+                           "ssl_verify_cert": True,
+                           "ssl_verify_identity": True,
+                       })
+
 
 class Employer(Base):
     __tablename__ = "employers"
     id = Column(Integer, primary_key=True, index=True)
+
     employer_name = Column(String(255))
     mobile = Column(String(20))
     email = Column(String(255), unique=True)
     password = Column(String(255))
     jobs = relationship("JobPost", back_populates="employer")
+
 
 class JobPost(Base):
     __tablename__ = "jobposts"
@@ -48,6 +50,7 @@ class JobPost(Base):
     ctc = Column(String(100))
     responsibilities = Column(String(2000))
     employer = relationship("Employer", back_populates="jobs")
+
 
 class Employee(Base):
     __tablename__ = "employees"
@@ -64,6 +67,7 @@ class Employee(Base):
     cv = Column(String(500))
     applications = relationship("JobApplication", back_populates="employee")
 
+
 class JobApplication(Base):
     __tablename__ = "job_applications"
     id = Column(Integer, primary_key=True, index=True)
@@ -76,6 +80,6 @@ class JobApplication(Base):
     additional_info = Column(String(1000))
     status = Column(String(50), default="Applied")
     applied_date = Column(String(50))
-    
+
     job = relationship("JobPost")
     employee = relationship("Employee", back_populates="applications")
