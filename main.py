@@ -167,7 +167,12 @@ templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "t
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-Base.metadata.create_all(bind=engine)
+# Initialize database tables (with error handling for connection issues)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"Warning: Could not initialize database tables at startup: {e}")
+    print("Database will be initialized when the app successfully connects.")
 
 # --- Home Page ---
 @app.get("/", response_class=HTMLResponse)
