@@ -51,3 +51,8 @@ outputType = "webview"
 
 [agent]
 expertMode = true
+
+[userenv]
+
+[userenv.shared]
+TIDB_DATABASE_URL = "mysql://35V1p44dnfZWLPW.root:9So0jsaVVAHJ5Il5@gateway01-privatelink.ap-southeast-1.prod.aws.tidbcloud.com:4000/test"

@@ -5,8 +5,13 @@ from sqlalchemy import create_engine
 import os
 
 Base = declarative_base()
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/jobs_dunia")
-engine = create_engine(DATABASE_URL)
+tidb_url = os.getenv("TIDB_DATABASE_URL", "mysql+pymysql://user:password@localhost/jobs_dunia")
+# Convert mysql:// to mysql+pymysql:// if needed
+if tidb_url.startswith("mysql://"):
+    DATABASE_URL = tidb_url.replace("mysql://", "mysql+pymysql://", 1)
+else:
+    DATABASE_URL = tidb_url
+engine = create_engine(DATABASE_URL, echo=False)
 
 class Employer(Base):
     __tablename__ = "employers"
