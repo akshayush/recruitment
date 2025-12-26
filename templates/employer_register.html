@@ -30,25 +30,48 @@
                     <div>
                         <label for="employer_name">🏢 Company/Employer Name</label>
                         <input type="text" id="employer_name" name="employer_name" required 
-                               placeholder="Enter your company name">
+                               placeholder="Enter your company name"
+                               pattern="^[A-Za-z0-9\s\.,&\-]{2,100}$" maxlength="100"
+                               title="Only letters, numbers, spaces, comma, dot, ampersand, hyphen. 2-100 characters.">
                     </div>
                     
                     <div>
                         <label for="mobile">📱 Mobile Number</label>
                         <input type="tel" id="mobile" name="mobile" required 
-                               placeholder="+91 98765 43210" pattern="[0-9]{10}">
+                               placeholder="9876543210"
+                               pattern="^\d{10}$" maxlength="10"
+                              title="Enter a valid 10-digit mobile number">
                     </div>
                     
                     <div>
                         <label for="email">📧 Email Address</label>
                         <input type="email" id="email" name="email" required 
-                               placeholder="employer@company.com">
+                               placeholder="employer@company.com"
+                               pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                               title="Enter a valid email address">
                     </div>
                     
                     <div>
+            <label for="contact_person">👤 Contact Person Name</label>
+            <input type="text" id="contact_person" name="contact_person" required
+                   placeholder="Enter contact person's name"
+                   pattern="^[A-Za-z\s]{2,50}$" maxlength="50"
+                   title="Only letters and spaces, 2-50 characters">
+        </div>
+
+        <div>
+            <label for="address">🏠 Company Address</label>
+            <textarea id="address" name="address" rows="3" maxlength="200" required
+                placeholder="Enter company address"></textarea>
+        </div>
+
+                    <div>
                         <label for="password">🔒 Password</label>
                         <input type="password" id="password" name="password" required 
-                               placeholder="Create a secure password" minlength="6">
+                               placeholder="Create a secure password"
+                               minlength="6" maxlength="64"
+                               pattern=".{6,64}"
+                               title="Password must be 6-64 characters">
                     </div>
                 </div>
                 
@@ -105,7 +128,8 @@
         <p>
             <a href="/">🏠 Back to Home</a> | 
             <a href="/employee/register">👨‍💼 Job Seeker Registration</a> | 
-            <a href="/openings">📋 Current Openings</a>
+            <a href="/openings">📋 Current Openings</a> |
+            <a href="/contact-us">📞 Contact Us</a>
         </p>
         <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
             &copy; 2025 Jobs Dunia - Your Trusted Recruitment Partner

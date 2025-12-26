@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employer Profile | Jobs Dunia</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <main class="fade-in">
+        <div class="card" style="max-width: 600px; margin: 2rem auto;">
+            <h2 style="color: #4a5568; margin-bottom: 1.5rem; text-align:center;">🏢 Employer Profile</h2>
+            <form action="/employer/profile" method="post" enctype="multipart/form-data" class="form-vertical">
+                <div class="form-group">
+                    <label for="employer_name">Company/Employer Name</label>
+                    <input type="text" id="employer_name" name="employer_name" required
+                        value="{{ employer.employer_name }}"
+                        pattern="^[A-Za-z0-9\s\.,&\-]{2,100}$" maxlength="100"
+                        title="Only letters, numbers, spaces, comma, dot, ampersand, hyphen. 2-100 characters.">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required
+                        value="{{ employer.email }}"
+                        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                        title="Enter a valid email address">
+                </div>
+                <div class="form-group">
+                    <label for="mobile">Mobile Number</label>
+                    <input type="tel" id="mobile" name="mobile" required
+                        value="{{ employer.mobile }}"
+                        pattern="^\d{10}$" maxlength="10"
+                        title="Enter a valid 10-digit mobile number">
+                </div>
+                <div class="form-group">
+                    <label for="contact_person">Contact Person</label>
+                    <input type="text" id="contact_person" name="contact_person"
+                        value="{{ employer.contact_person or '' }}"
+                        pattern="^[A-Za-z\s]{2,50}$" maxlength="50"
+                        title="Only letters and spaces, 2-50 characters">
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" rows="3" maxlength="200"
+                        placeholder="Company address...">{{ employer.address or '' }}</textarea>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn">💾 Save Profile</button>
+                    <a href="/employer/dashboard" class="btn btn-secondary">⬅️ Back to Dashboard</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
