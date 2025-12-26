@@ -56,3 +56,9 @@ expertMode = true
 
 [userenv.shared]
 TIDB_DATABASE_URL = "mysql://35V1p44dnfZWLPW.root:9So0jsaVVAHJ5Il5@gateway01-privatelink.ap-southeast-1.prod.aws.tidbcloud.com:4000/test"
+TIDB_HOST = "gateway01.ap-southeast-1.prod.aws.tidbcloud.com"
+TIDB_PORT = "4000"
+TIDB_USER = "35V1p44dnfZWLPW.root"
+TIDB_PASSWORD = "9So0jsaVVAHJ5Il5"
+TIDB_DATABASE = "test"
+TIDB_CA_PATH = "./ca_cert.pem"

@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 sqlalchemy
-PyMySQL
+mysql-connector-python
 jinja2
 python-multipart
 pydantic
@@ -10,4 +10,3 @@ pyjwt
 google-auth
 google-auth-httplib2
 google-auth-oauthlib
-PyMySQL
