@@ -2,9 +2,11 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
+import os
 
 Base = declarative_base()
-engine = create_engine("sqlite:///jobs_dunia.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/jobs_dunia")
+engine = create_engine(DATABASE_URL)
 
 class Employer(Base):
     __tablename__ = "employers"
