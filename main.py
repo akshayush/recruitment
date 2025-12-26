@@ -550,25 +550,12 @@ def employee_register(
     if existing_employee:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    # Secure file handling
-    safe_filename = sanitize_filename(cv.filename)
-    timestamp = str(int(time.time()))
-    unique_filename = f"{email}_{timestamp}_{safe_filename}"
-
-    # Ensure CV directory exists
-    cv_dir = Path("static/cvs")
-    cv_dir.mkdir(parents=True, exist_ok=True)
-
-    cv_path = cv_dir / unique_filename
-
+    # Read and store CV file in database
     try:
-        content = cv.file.read()
+        cv_content = cv.file.read()
         # Additional security: check file content
-        if b'<script' in content.lower() or b'javascript' in content.lower():
+        if b'<script' in cv_content.lower() or b'javascript' in cv_content.lower():
             raise HTTPException(status_code=400, detail="Potentially malicious file content detected")
-
-        with open(cv_path, "wb") as buffer:
-            buffer.write(content)
     except Exception as e:
         raise HTTPException(status_code=500, detail="File upload failed")
 
@@ -594,7 +581,8 @@ def employee_register(
         current_org=current_org,
         current_ctc=current_ctc,
         notice_period=notice_period,
-        cv=str(cv_path)
+        cv_filename=sanitize_filename(cv.filename),
+        cv_data=cv_content
     )
     db.add(employee)
     db.commit()
@@ -786,25 +774,12 @@ def submit_job_application(
     employee = db.query(Employee).filter(Employee.email == employee_email).first()
     
     if not employee:
-        # Secure file handling for CV
-        safe_filename = sanitize_filename(cv.filename)
-        timestamp = str(int(time.time()))
-        unique_filename = f"{timestamp}_{safe_filename}"
-
-        # Ensure CV directory exists
-        cv_dir = Path("static/cvs")
-        cv_dir.mkdir(parents=True, exist_ok=True)
-
-        cv_path = cv_dir / unique_filename
-
+        # Read and store CV file in database
         try:
-            content = cv.file.read()
+            cv_content = cv.file.read()
             # Additional security: check file content
-            if b'<script' in content.lower() or b'javascript' in content.lower():
+            if b'<script' in cv_content.lower() or b'javascript' in cv_content.lower():
                 raise HTTPException(status_code=400, detail="Potentially malicious file content detected")
-
-            with open(cv_path, "wb") as buffer:
-                buffer.write(content)
         except Exception as e:
             raise HTTPException(status_code=500, detail="File upload failed")
 
@@ -823,7 +798,8 @@ def submit_job_application(
             current_org="",
             current_ctc="",
             notice_period=available_from,
-            cv=str(cv_path)
+            cv_filename=sanitize_filename(cv.filename),
+            cv_data=cv_content
         )
         db.add(employee)
         db.commit()
@@ -831,25 +807,15 @@ def submit_job_application(
     else:
         # If employee exists but didn't upload CV originally, handle CV upload
         if cv.filename:
-            safe_filename = sanitize_filename(cv.filename)
-            timestamp = str(int(time.time()))
-            unique_filename = f"{timestamp}_{safe_filename}"
-
-            cv_dir = Path("static/cvs")
-            cv_dir.mkdir(parents=True, exist_ok=True)
-            cv_path = cv_dir / unique_filename
-
             try:
-                content = cv.file.read()
-                if b'<script' in content.lower() or b'javascript' in content.lower():
+                cv_content = cv.file.read()
+                if b'<script' in cv_content.lower() or b'javascript' in cv_content.lower():
                     raise HTTPException(status_code=400, detail="Potentially malicious file content detected")
-
-                with open(cv_path, "wb") as buffer:
-                    buffer.write(content)
                 
                 # Update employee CV if they didn't have one
-                if not employee.cv:
-                    employee.cv = str(cv_path)
+                if not employee.cv_data:
+                    employee.cv_filename = sanitize_filename(cv.filename)
+                    employee.cv_data = cv_content
                     db.commit()
             except Exception as e:
                 raise HTTPException(status_code=500, detail="File upload failed")
@@ -908,3 +874,22 @@ def employee_applications(
         "employee": current_employee,
         "applications": applications
     })
+
+@app.get("/employee/{employee_id}/cv/download")
+def download_cv(
+    employee_id: int,
+    db: Session = Depends(get_db)
+):
+    from fastapi.responses import FileResponse
+    import io
+    
+    employee = db.query(Employee).filter(Employee.id == employee_id).first()
+    if not employee or not employee.cv_data:
+        raise HTTPException(status_code=404, detail="CV not found")
+    
+    filename = employee.cv_filename or "cv.pdf"
+    return FileResponse(
+        io.BytesIO(employee.cv_data),
+        filename=filename,
+        media_type="application/octet-stream"
+    )

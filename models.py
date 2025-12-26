@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -64,7 +64,8 @@ class Employee(Base):
     current_org = Column(String(255))
     current_ctc = Column(String(100))
     notice_period = Column(String(100))
-    cv = Column(String(500))
+    cv_filename = Column(String(255))
+    cv_data = Column(LargeBinary)
     applications = relationship("JobApplication", back_populates="employee")
 
 
